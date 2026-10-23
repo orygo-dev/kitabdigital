@@ -1,6 +1,6 @@
 # Mengaktifkan menu Al-Qur’an
 
-Menu **Al-Qur’an** berada tepat setelah **Beranda**. Pembaca menyediakan daftar surah, pencarian nama/nomor, teks Utsmani, terjemahan Indonesia, ukuran huruf, dan penanda ayat di perangkat. Ayat dimuat 50 per halaman. Daftar surah dan halaman ayat yang pernah berhasil dibuka disimpan di peramban sebagai cadangan saat sumber tidak dapat dijangkau; ini bukan unduhan seluruh Al-Qur’an. Audio tilawah Quran.Foundation belum termasuk pada tahap ini; menu Murotal yang sudah ada tetap tersedia.
+Menu **Al-Qur’an** berada tepat setelah **Beranda**. Pembaca menyediakan daftar surah, pencarian nama/nomor, filter Makkiyah/Madaniyah, teks Utsmani, terjemahan Indonesia, ukuran huruf, dan penanda ayat di perangkat. Halaman pembaca memiliki pemilih surah, lompat ke nomor ayat, dan navigasi surah sebelumnya/berikutnya. Ayat dimuat 50 per halaman. Daftar surah dan halaman ayat yang pernah berhasil dibuka disimpan di peramban sebagai cadangan saat sumber tidak dapat dijangkau; ini bukan unduhan seluruh Al-Qur’an. Audio tilawah Quran.Foundation belum termasuk pada tahap ini; menu Murotal yang sudah ada tetap tersedia.
 
 ## 1. Buat kredensial Quran.Foundation
 

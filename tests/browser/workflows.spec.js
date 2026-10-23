@@ -103,7 +103,9 @@ test("alur admin, pembaca, audio persisten, merek, layar pembuka dan offline", a
   await page.getByLabel("Judul", { exact: true }).fill("Audio Verifikasi");
   await page.getByRole("button", { name: "Simpan perubahan" }).click();
   await expect(
-    page.getByText("Pilih berkas MP3 dan tunggu hingga unggahan berhasil sebelum menyimpan."),
+    page.getByText(
+      "Pilih berkas MP3 dan tunggu hingga unggahan berhasil sebelum menyimpan.",
+    ),
   ).toBeVisible();
   await page
     .getByLabel("Berkas MP3")
@@ -464,6 +466,9 @@ test("sentuhan: ketuk tepi dan geser RTL/LTR pada halaman tunggal", async ({
       "Halaman 1 dari 12",
     );
     const active = page.locator('.pdf-page[data-page="1"]');
+    await expect(
+      page.getByRole("button", { name: "Berikutnya", exact: true }),
+    ).toBeEnabled();
     const box = await active.boundingBox();
     await page.mouse.click(
       direction === "rtl" ? box.x + 8 : box.x + box.width - 8,
@@ -472,6 +477,10 @@ test("sentuhan: ketuk tepi dan geser RTL/LTR pada halaman tunggal", async ({
     await expect(page.locator(".reader-status")).toHaveText(
       "Halaman 2 dari 12",
     );
+    // Page labels update before the replacement PDF canvas and flip instance finish rendering.
+    await expect(
+      page.getByRole("button", { name: "Berikutnya", exact: true }),
+    ).toBeEnabled();
     await page.locator('.pdf-page[data-page="2"]').evaluate((el, direction) => {
       const box = el.getBoundingClientRect(),
         y = box.y + box.height / 2;
