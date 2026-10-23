@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import { api, readLocal, saveLocal } from "./api";
 import "./quran.css";
+import "./mushaf.css";
 
 const validBookmark = (value) =>
   value &&
@@ -58,6 +59,93 @@ function Icon({ name, ...props }) {
     >
       {paths[name]}
     </svg>
+  );
+}
+
+function MushafCorner({ position }) {
+  return (
+    <svg
+      className={`mushaf-corner mushaf-corner-${position}`}
+      viewBox="0 0 100 100"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M4 96V4h92v12H69c-5 24-29 48-53 53v27H4Z"
+        fill="#165346"
+        stroke="#b08b3d"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M10 87V10h77M19 59c21-6 34-19 40-40"
+        stroke="#dfc277"
+        strokeWidth="1.2"
+      />
+      <path
+        d="m29 14 5 8 9 1-6 7 1 9-9-4-8 4 1-9-6-7 9-1 4-8Zm-1 29 4 5 7 1-5 5v7l-6-3-6 3v-7l-5-5 7-1 4-5Z"
+        fill="#d9b968"
+      />
+      <path
+        d="M14 45c10-4 13-10 13-19m20-12c-4 10-10 13-19 13M14 65c15-5 33-23 39-39"
+        stroke="#e8d39d"
+        strokeWidth="1.1"
+      />
+      <circle cx="14" cy="14" r="4" fill="#ddbb67" />
+      <circle cx="42" cy="42" r="3" fill="#ddbb67" />
+    </svg>
+  );
+}
+
+function ChapterNavigation({ previous, next, currentId, top = false }) {
+  const item = (chapter, forward) => {
+    const content = (
+      <>
+        <span
+          className={`mushaf-nav-arrow ${forward ? "" : "mushaf-arrow-back"}`}
+        >
+          <Icon name="arrow" />
+        </span>
+        <span>
+          <small>{forward ? "Surah berikutnya" : "Surah sebelumnya"}</small>
+          <b>
+            {chapter?.name_simple ||
+              (forward
+                ? currentId === 114
+                  ? "Surah terakhir"
+                  : "Belum tersedia"
+                : currentId === 1
+                  ? "Surah pertama"
+                  : "Belum tersedia")}
+          </b>
+        </span>
+      </>
+    );
+    return chapter ? (
+      <Link
+        className={`mushaf-nav-link ${forward ? "mushaf-nav-next" : ""}`}
+        to={`/alquran/${chapter.id}`}
+        aria-label={`${forward ? "Surah berikutnya" : "Surah sebelumnya"}: ${chapter.name_simple}`}
+      >
+        {content}
+      </Link>
+    ) : (
+      <button
+        className={`mushaf-nav-link ${forward ? "mushaf-nav-next" : ""}`}
+        type="button"
+        disabled
+      >
+        {content}
+      </button>
+    );
+  };
+  return (
+    <nav
+      className={`mushaf-chapter-navigation ${top ? "mushaf-navigation-top" : ""}`}
+      aria-label={top ? "Navigasi surah di atas" : "Pindah ke surah lain"}
+    >
+      {item(previous, false)}
+      {item(next, true)}
+    </nav>
   );
 }
 
@@ -115,9 +203,10 @@ export default function Quran() {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const [jump, setJump] = useState("");
+  const [navigationOpen, setNavigationOpen] = useState(false);
   const [retry, setRetry] = useState(0);
   const [size, setSize] = useState(() =>
-    Math.min(48, Math.max(24, Number(readLocal("quran-font-size", 32)) || 32)),
+    Math.min(48, Math.max(24, Number(readLocal("quran-font-size", 36)) || 36)),
   );
   const [translation, setTranslation] = useState(true);
   const [bookmark, setBookmark] = useState(() => {
@@ -178,6 +267,14 @@ export default function Quran() {
   }, [content, loading, hash]);
 
   function mark(verse) {
+    if (
+      bookmark?.chapter === chapterId &&
+      bookmark?.verse === verse.verse_number
+    ) {
+      saveLocal("quran-bookmark", null);
+      setBookmark(null);
+      return;
+    }
     const saved = {
       chapter: chapterId,
       verse: verse.verse_number,
@@ -422,8 +519,24 @@ export default function Quran() {
         content && (
           <>
             <div className="quran-reader-layout">
-              <aside className="quran-reader-sidebar">
-                <div className="quran-sidebar-panel">
+              <aside
+                className={`quran-reader-sidebar ${navigationOpen ? "mushaf-sidebar-open" : ""}`}
+              >
+                <button
+                  className="mushaf-mobile-tools"
+                  type="button"
+                  aria-expanded={navigationOpen}
+                  aria-controls="mushaf-navigation-panel"
+                  onClick={() => setNavigationOpen((open) => !open)}
+                >
+                  <Icon name="settings" />
+                  Pilih surah & ayat
+                  <span aria-hidden="true">{navigationOpen ? "−" : "+"}</span>
+                </button>
+                <div
+                  className="quran-sidebar-panel"
+                  id="mushaf-navigation-panel"
+                >
                   <span className="quran-kicker">NAVIGASI BACAAN</span>
                   <h2>Pilih surah</h2>
                   <label>
@@ -467,6 +580,24 @@ export default function Quran() {
                     <p>Tandai ayat untuk melanjutkan bacaan di lain waktu.</p>
                   </div>
                 </div>
+                {bookmark && (
+                  <Link
+                    className="mushaf-saved-card"
+                    to={continueUrl}
+                    aria-label={`Lanjut ke penanda ${bookmark.name}, ayat ${bookmark.verse}`}
+                  >
+                    <span className="mushaf-saved-title">
+                      <Icon name="bookmark" />
+                      Penanda Anda
+                    </span>
+                    <b>
+                      {bookmark.name} · Ayat {bookmark.verse}
+                    </b>
+                    <span>
+                      Lanjutkan membaca <Icon name="arrow" />
+                    </span>
+                  </Link>
+                )}
                 <div className="quran-source-note">
                   <span>SUMBER BACAAN</span>
                   <b>Quran.Foundation</b>
@@ -474,44 +605,62 @@ export default function Quran() {
                 </div>
               </aside>
               <div className="quran-reader-main">
-                <div className="quran-controls">
-                  <span className="quran-control-title">
-                    <Icon name="settings" />
-                    Tampilan bacaan
-                  </span>
-                  <label className="check">
-                    <input
-                      type="checkbox"
-                      checked={translation}
-                      onChange={(e) => setTranslation(e.target.checked)}
-                    />
-                    Terjemahan Indonesia
-                  </label>
-                  <label className="quran-font-control">
-                    <span className="quran-sr-only">Ukuran teks Arab</span>
-                    <span aria-hidden="true">A</span>
-                    <input
-                      aria-label="Ukuran teks Arab"
-                      type="range"
-                      min="24"
-                      max="48"
-                      value={size}
-                      onChange={(e) => {
-                        setSize(Number(e.target.value));
-                        saveLocal("quran-font-size", Number(e.target.value));
-                      }}
-                    />
-                    <span aria-hidden="true">A</span>
-                  </label>
-                </div>
+                <ChapterNavigation
+                  previous={previousChapter}
+                  next={nextChapter}
+                  currentId={chapterId}
+                  top
+                />
                 <div className="quran-paper">
-                  <div className="quran-paper-heading">
-                    <span />
-                    <Icon name="book" />
-                    <p lang="ar" dir="rtl">
-                      {chapter?.name_arabic}
+                  {["tl", "tr", "bl", "br"].map((position) => (
+                    <MushafCorner key={position} position={position} />
+                  ))}
+                  <header className="mushaf-surah-heading">
+                    <div className="mushaf-surah-titles">
+                      <h1>{chapter?.name_simple || `Surah ${chapterId}`}</h1>
+                      <span aria-hidden="true" />
+                      <p lang="ar" dir="rtl">
+                        {chapter?.name_arabic}
+                      </p>
+                    </div>
+                    <p className="mushaf-surah-meta">
+                      Surah {chapterId}
+                      <span>◆</span>
+                      {chapter?.verses_count} ayat<span>◆</span>
+                      {chapter?.revelation_place === "makkah"
+                        ? "Makkiyah"
+                        : "Madaniyah"}
                     </p>
-                    <span />
+                  </header>
+                  <div className="quran-controls">
+                    <span className="quran-control-title">
+                      <Icon name="settings" />
+                      Tampilan bacaan
+                    </span>
+                    <label className="check">
+                      <input
+                        type="checkbox"
+                        checked={translation}
+                        onChange={(e) => setTranslation(e.target.checked)}
+                      />
+                      Terjemahan Indonesia
+                    </label>
+                    <label className="quran-font-control">
+                      <span className="quran-sr-only">Ukuran teks Arab</span>
+                      <span aria-hidden="true">A</span>
+                      <input
+                        aria-label="Ukuran teks Arab"
+                        type="range"
+                        min="24"
+                        max="48"
+                        value={size}
+                        onChange={(e) => {
+                          setSize(Number(e.target.value));
+                          saveLocal("quran-font-size", Number(e.target.value));
+                        }}
+                      />
+                      <span aria-hidden="true">A</span>
+                    </label>
                   </div>
                   <div className="quran-verses">
                     {content.verses.map((verse) => (
@@ -521,19 +670,32 @@ export default function Quran() {
                         key={verse.verse_key}
                       >
                         <div className="quran-verse-heading">
-                          <b>{verse.verse_key}</b>
+                          <b
+                            className="mushaf-verse-number"
+                            aria-label={`Ayat ${verse.verse_key}`}
+                          >
+                            <span>{verse.verse_number}</span>
+                          </b>
                           <button
                             type="button"
+                            className="mushaf-bookmark-button"
+                            aria-label={
+                              bookmark?.chapter === chapterId &&
+                              bookmark?.verse === verse.verse_number
+                                ? "★ Ditandai"
+                                : "☆ Tandai ayat"
+                            }
                             aria-pressed={
                               bookmark?.chapter === chapterId &&
                               bookmark?.verse === verse.verse_number
                             }
                             onClick={() => mark(verse)}
                           >
+                            <Icon name="bookmark" />
                             {bookmark?.chapter === chapterId &&
                             bookmark?.verse === verse.verse_number
-                              ? "★ Ditandai"
-                              : "☆ Tandai ayat"}
+                              ? "Ditandai"
+                              : "Tandai ayat"}
                           </button>
                         </div>
                         <p
@@ -585,25 +747,11 @@ export default function Quran() {
                     . Penanda catatan kaki tidak ditampilkan.
                   </p>
                 )}
-                <nav
-                  className="quran-chapter-navigation"
-                  aria-label="Pindah ke surah lain"
-                >
-                  {previousChapter ? (
-                    <Link to={`/alquran/${previousChapter.id}`}>
-                      <small>← SURAH SEBELUMNYA</small>
-                      <b>{previousChapter.name_simple}</b>
-                    </Link>
-                  ) : (
-                    <span />
-                  )}
-                  {nextChapter && (
-                    <Link to={`/alquran/${nextChapter.id}`}>
-                      <small>SURAH BERIKUTNYA →</small>
-                      <b>{nextChapter.name_simple}</b>
-                    </Link>
-                  )}
-                </nav>
+                <ChapterNavigation
+                  previous={previousChapter}
+                  next={nextChapter}
+                  currentId={chapterId}
+                />
               </div>
             </div>
           </>

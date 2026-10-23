@@ -4,6 +4,8 @@ Menu **Al-Qur’an** berada tepat setelah **Beranda**. Pembaca menyediakan dafta
 
 ## 1. Buat kredensial Quran.Foundation
 
+Halaman surah menggunakan tampilan mushaf berbingkai emas dengan latar perkamen. Tombol **Tandai ayat** dapat ditekan kembali untuk menghapus penanda; ayat yang ditandai diberi sorotan dan pita penanda. Navigasi **Surah sebelumnya / Surah berikutnya** tersedia di atas dan di bawah bacaan, dengan nama surah tujuan. Pada surah pertama/terakhir, arah yang tidak tersedia dinonaktifkan. Di ponsel, buka **Pilih surah & ayat** untuk menampilkan pemilih surah dan lompat ayat.
+
 Buka [Developer Console](https://dev-console.quran.foundation) dan buat aplikasi **Backend/server** dengan akses **Content APIs**. Gunakan Client Credentials dengan scope `content`. Kredensial pre-live dan production berbeda. Ikuti [panduan resmi](https://api-docs.quran.foundation/docs/quickstart/).
 
 Jangan kirim Client Secret melalui chat, commit Git, atau masukkan ke kode frontend. Pengunjung tidak perlu login ke Quran.Foundation untuk membaca.

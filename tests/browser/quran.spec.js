@@ -97,6 +97,13 @@ test("Al-Qur’an: urutan menu, surah, terjemahan, penanda dan layar kecil", asy
   await expect(
     page.getByRole("button", { name: "★ Ditandai" }),
   ).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "★ Ditandai" }).click();
+  await expect(
+    page.getByRole("button", { name: "☆ Tandai ayat", exact: true }),
+  ).toHaveAttribute("aria-pressed", "false");
+  await page
+    .getByRole("button", { name: "☆ Tandai ayat", exact: true })
+    .click();
   await page.reload();
   await expect(page.getByRole("button", { name: "★ Ditandai" })).toBeVisible();
   await page.getByRole("link", { name: "Daftar surah", exact: true }).click();
@@ -142,5 +149,100 @@ test("Al-Qur’an: nomor surah tidak valid", async ({ page }) => {
   await page.goto("/alquran/115");
   await expect(
     page.getByRole("alert").filter({ hasText: "Surah tidak ditemukan." }),
+  ).toBeVisible();
+});
+
+test("Mushaf: navigasi surah jelas di atas dan bawah, serta kontrol ponsel", async ({
+  page,
+}) => {
+  await mockQuran(page);
+  await page.goto("/alquran/1");
+  const top = page.getByRole("navigation", {
+    name: "Navigasi surah di atas",
+    exact: true,
+  });
+  const bottom = page.getByRole("navigation", {
+    name: "Pindah ke surah lain",
+    exact: true,
+  });
+  await expect(
+    top.getByRole("button", { name: /Surah sebelumnya/ }),
+  ).toBeDisabled();
+  await top
+    .getByRole("link", { name: "Surah berikutnya: Al-Baqarah", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Al-Baqarah", exact: true }),
+  ).toBeVisible();
+  await bottom
+    .getByRole("link", { name: "Surah sebelumnya: Al-Fatihah", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Al-Fatihah", exact: true }),
+  ).toBeVisible();
+  await page.setViewportSize({ width: 375, height: 812 });
+  const tools = page.getByRole("button", { name: /Pilih surah & ayat/ });
+  await expect(tools).toHaveAttribute("aria-expanded", "false");
+  await tools.click();
+  await page.getByLabel("Pindah surah").selectOption("2");
+  await expect(
+    page.getByRole("heading", { name: "Al-Baqarah", exact: true }),
+  ).toBeVisible();
+  await tools.click();
+  await expect(tools).toHaveAttribute("aria-expanded", "false");
+  await top
+    .getByRole("link", { name: "Surah sebelumnya: Al-Fatihah", exact: true })
+    .click();
+  await page.setViewportSize({ width: 320, height: 812 });
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await expect(
+    page.getByRole("button", { name: "☆ Tandai ayat", exact: true }),
+  ).toBeVisible();
+});
+
+test("Mushaf: surah terakhir tidak menautkan ke surah 115", async ({
+  page,
+}) => {
+  await mockQuran(page);
+  await page.route("**/api/quran/chapters", (route) =>
+    route.fulfill({
+      json: {
+        chapters: [
+          {
+            id: 113,
+            name_simple: "Al-Falaq",
+            name_arabic: "الفلق",
+            verses_count: 5,
+            revelation_place: "makkah",
+          },
+          {
+            id: 114,
+            name_simple: "An-Nas",
+            name_arabic: "الناس",
+            verses_count: 6,
+            revelation_place: "makkah",
+          },
+        ],
+      },
+    }),
+  );
+  await page.goto("/alquran/114");
+  const top = page.getByRole("navigation", {
+    name: "Navigasi surah di atas",
+    exact: true,
+  });
+  await expect(
+    top.getByRole("button", { name: /Surah berikutnya/ }),
+  ).toBeDisabled();
+  await expect(page.locator('a[href="/alquran/115"]')).toHaveCount(0);
+  await top
+    .getByRole("link", { name: "Surah sebelumnya: Al-Falaq", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Al-Falaq", exact: true }),
   ).toBeVisible();
 });
