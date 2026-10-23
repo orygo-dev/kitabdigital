@@ -246,3 +246,54 @@ test("Mushaf: surah terakhir tidak menautkan ke surah 115", async ({
     page.getByRole("heading", { name: "Al-Falaq", exact: true }),
   ).toBeVisible();
 });
+
+test("Daftar surah mushaf: penanda, pencarian kosong, dan layar 320 piksel", async ({
+  page,
+}) => {
+  await mockQuran(page);
+  await page.addInitScript(() =>
+    localStorage.setItem(
+      "quran-bookmark",
+      JSON.stringify({ chapter: 2, verse: 51, name: "Al-Baqarah" }),
+    ),
+  );
+  await page.goto("/alquran");
+  await expect(
+    page.getByRole("heading", { name: "Daftar Surah", exact: true }),
+  ).toBeVisible();
+  await expect(page.locator(".directory-chapter-marked")).toContainText(
+    "Al-Baqarah",
+  );
+  for (const width of [375, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await expect(
+      page.getByRole("link", {
+        name: "Lanjutkan bacaan: Al-Baqarah, ayat 51",
+        exact: true,
+      }),
+    ).toBeVisible();
+  }
+  await page.getByLabel("Cari surah").fill("tidak-ada");
+  await expect(
+    page.getByRole("heading", { name: "Surah tidak ditemukan", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Tampilkan semua surah", exact: true })
+    .click();
+  await expect(page.locator(".quran-chapter")).toHaveCount(2);
+  await page.getByRole("button", { name: "Madaniyah", exact: true }).click();
+  await expect(page.locator(".quran-chapter")).toHaveCount(1);
+  await page
+    .getByRole("link", {
+      name: "Lanjutkan bacaan: Al-Baqarah, ayat 51",
+      exact: true,
+    })
+    .click();
+  await expect(page).toHaveURL(/alquran\/2\?page=2#ayat-51/);
+  await expect(page.locator("#ayat-51")).toBeVisible();
+});

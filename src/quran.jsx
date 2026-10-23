@@ -9,6 +9,7 @@ import {
 import { api, readLocal, saveLocal } from "./api";
 import "./quran.css";
 import "./mushaf.css";
+import "./quran-directory.css";
 
 const validBookmark = (value) =>
   value &&
@@ -149,36 +150,93 @@ function ChapterNavigation({ previous, next, currentId, top = false }) {
   );
 }
 
-function BookOrnament() {
+function DirectoryCorners() {
   return (
-    <div className="quran-ornament" aria-hidden="true">
-      <div className="quran-orbit quran-orbit-one" />
-      <div className="quran-orbit quran-orbit-two" />
-      <span className="quran-spark quran-spark-one">✧</span>
-      <span className="quran-spark quran-spark-two">✧</span>
-      <svg viewBox="0 0 240 220" fill="none">
-        <path d="m28 155 92 37 92-37-92-28-92 28Z" fill="#063e36" />
+    <span className="directory-corners" aria-hidden="true">
+      {["tl", "tr", "br", "bl"].map((position) => (
+        <svg
+          className={`directory-corner directory-corner-${position}`}
+          key={position}
+          viewBox="0 0 48 48"
+          fill="none"
+        >
+          <path
+            d="M2 44V2h42M6 30V6h24M10 19c8 0 9-9 15-9m-15 15c9-2 13-6 15-15M8 37c15-2 27-14 29-29"
+            stroke="currentColor"
+            strokeWidth="1"
+          />
+          <path
+            d="m12 7 2 4 4 1-4 2-2 4-1-4-4-2 4-1 1-4Zm14 4 2 3 4 1-4 2-2 3-1-3-4-2 4-1 1-3Zm-15 15 2 3 4 1-4 2-2 3-1-3-4-2 4-1 1-3Z"
+            fill="currentColor"
+          />
+          <circle cx="7" cy="7" r="2" fill="currentColor" />
+        </svg>
+      ))}
+    </span>
+  );
+}
+
+function DirectoryBook() {
+  return (
+    <div className="directory-book" aria-hidden="true">
+      <span className="directory-book-halo" />
+      <svg viewBox="0 0 280 210" fill="none">
         <path
-          d="m37 149 83 33 83-33M120 182v8"
-          stroke="#bb9c5d"
+          d="m45 176 106 17 98-64-107-13-97 60Z"
+          fill="#052f28"
+          opacity=".6"
+        />
+        <path
+          d="m72 155 72 27 91-59-68-29-95 61Z"
+          fill="#815a31"
+          stroke="#d5b66a"
+        />
+        <path
+          d="m86 159 60 17 79-51-60-24-79 58Z"
+          fill="#eddbb0"
+          stroke="#b59453"
+        />
+        <path
+          d="m78 150 89-111 66 37-89 107-66-33Z"
+          fill="#d0b36e"
+          stroke="#e9d09b"
           strokeWidth="2"
         />
         <path
-          d="M120 161C90 139 59 142 35 133V54c25 0 55 3 85 23 30-20 60-23 85-23v79c-24 9-55 6-85 28Z"
-          fill="#e9dfc6"
-          stroke="#c8aa6b"
+          d="m74 141 87-113 69 38-89 114-67-39Z"
+          fill="#145346"
+          stroke="#d4b676"
           strokeWidth="2"
         />
         <path
-          d="M120 151c-26-20-49-19-76-25V44c28 2 52 9 76 25 24-16 48-23 76-25v82c-27 6-50 5-76 25Z"
-          fill="#fff9e9"
+          d="m87 137 77-98 54 29-78 101-53-32Z"
+          stroke="#cdb476"
+          strokeWidth="1.4"
         />
         <path
-          d="M120 69v82M52 57c22 3 42 9 59 20m-59-8c22 3 42 9 59 20m-59-8c22 3 42 9 59 20m-59-8c22 3 42 9 59 20m-59-8c22 3 42 9 59 20m18-48c17-11 37-17 59-20m-59 32c17-11 37-17 59-20m-59 32c17-11 37-17 59-20m-59 32c17-11 37-17 59-20m-59 32c17-11 37-17 59-20"
-          stroke="#c4b38c"
-          strokeWidth="1.5"
+          d="m97 132 69-86 42 24-69 88-42-26Z"
+          stroke="#cdb476"
+          strokeWidth=".8"
+          strokeDasharray="2 3"
         />
-        <path d="m154 55 13-4v71l-7-4-6 7V55Z" fill="#bd9b53" />
+        <path
+          d="m134 115 7-18 16-15 9 3 3 11-8 18-16 14-8-3-3-10Z"
+          fill="#b49250"
+        />
+        <path
+          d="m141 113 4-13 11-11 5 2 2 7-6 14-11 10-4-2-1-7Z"
+          fill="#1b5b48"
+          stroke="#dfc282"
+        />
+        <path
+          d="m164 43 9 5-6 8-3-13Zm-68 88 9 5-7 8-2-13Zm100-56 8 4-6 8-2-12Zm-61 77 9 5-7 8-2-13Z"
+          fill="#c9aa64"
+        />
+        <path
+          d="m73 141 67 39 3 8-69-39-1-8Z"
+          fill="#093a31"
+          stroke="#bc9e59"
+        />
       </svg>
     </div>
   );
@@ -330,21 +388,11 @@ export default function Quran() {
             <span />
             {id ? "RUANG BACA AL-QUR’AN" : "AL-QUR’AN DIGITAL"}
           </span>
-          <h1>
-            {id && chapter ? (
-              chapter.name_simple
-            ) : (
-              <>
-                Dekatkan hati,
-                <br />
-                melalui setiap ayat.
-              </>
-            )}
-          </h1>
+          <h1>{id && chapter ? chapter.name_simple : "Daftar Surah"}</h1>
           <p>
             {id && chapter
               ? "Luangkan waktu sejenak. Baca, pahami, dan resapi setiap ayat."
-              : "Baca Al-Qur’an dengan tenang, lengkap dengan terjemahan Bahasa Indonesia dan penanda bacaan Anda."}
+              : "Temukan surah, lanjutkan bacaan, dan dekatkan hati melalui setiap ayat."}
           </p>
           <div className="quran-hero-meta">
             {id && chapter ? (
@@ -363,9 +411,8 @@ export default function Quran() {
               <>
                 <span>
                   <Icon name="book" />
-                  {chapters.length || "—"} surah tersedia
+                  {chapters.length || "—"} surah
                 </span>
-                <i />
                 <span>Terjemahan Indonesia</span>
               </>
             )}
@@ -380,8 +427,9 @@ export default function Quran() {
             <small>{String(chapter.id).padStart(3, "0")}</small>
           </div>
         ) : (
-          <BookOrnament />
+          <DirectoryBook />
         )}
+        {!id && <DirectoryCorners />}
       </header>
       {bookmark && (
         <Link
@@ -393,15 +441,19 @@ export default function Quran() {
             <Icon name="bookmark" />
           </span>
           <span>
-            <small>PENANDA BACAAN ANDA</small>
+            <small>Lanjutkan bacaan</small>
             <b>
               {bookmark.name}
               <span> · Ayat {bookmark.verse}</span>
             </b>
+            <span className="directory-resume-caption">
+              Penanda bacaan Anda
+            </span>
           </span>
           <span className="quran-resume-action">
             Lanjutkan <Icon name="arrow" />
           </span>
+          {!id && <DirectoryCorners />}
         </Link>
       )}
       {cached && (
@@ -425,54 +477,56 @@ export default function Quran() {
         </div>
       ) : !id ? (
         <>
-          <div className="quran-catalog-heading">
-            <div>
-              <span className="quran-kicker">MULAI PERJALANAN MEMBACA</span>
-              <h2>Daftar surah</h2>
+          <div className="directory-toolbar">
+            <div className="quran-catalog-heading">
+              <label className="quran-search">
+                <span className="quran-sr-only">Cari surah</span>
+                <Icon name="search" />
+                <input
+                  type="search"
+                  value={query}
+                  placeholder="Cari nama atau nomor surah…"
+                  onChange={(event) => setQuery(event.target.value)}
+                />
+              </label>
             </div>
-            <label className="quran-search">
-              <span className="quran-sr-only">Cari surah</span>
-              <Icon name="search" />
-              <input
-                type="search"
-                value={query}
-                placeholder="Cari nama atau nomor surah…"
-                onChange={(event) => setQuery(event.target.value)}
-              />
-            </label>
-          </div>
-          <div className="quran-filterbar">
-            <div
-              className="quran-filters"
-              role="group"
-              aria-label="Filter tempat diturunkan"
-            >
-              {[
-                ["all", "Semua surah"],
-                ["makkah", "Makkiyah"],
-                ["madinah", "Madaniyah"],
-              ].map(([value, label]) => (
-                <button
-                  type="button"
-                  key={value}
-                  aria-pressed={filter === value}
-                  onClick={() => setFilter(value)}
-                >
-                  {label}
-                </button>
-              ))}
+            <div className="quran-filterbar">
+              <div
+                className="quran-filters"
+                role="group"
+                aria-label="Filter tempat diturunkan"
+              >
+                {[
+                  ["all", "Semua surah"],
+                  ["makkah", "Makkiyah"],
+                  ["madinah", "Madaniyah"],
+                ].map(([value, label]) => (
+                  <button
+                    type="button"
+                    key={value}
+                    aria-pressed={filter === value}
+                    onClick={() => setFilter(value)}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <span>{filtered.length} surah</span>
             </div>
-            <span>{filtered.length} surah</span>
           </div>
           <div className="quran-chapters">
             {filtered.map((item) => (
               <Link
-                className="quran-chapter"
+                className={`quran-chapter ${bookmark?.chapter === item.id ? "directory-chapter-marked" : ""}`}
                 key={item.id}
                 to={`/alquran/${item.id}`}
               >
+                <DirectoryCorners />
                 <span className="quran-number">
                   <span>{item.id}</span>
+                </span>
+                <span className="directory-card-arrow">
+                  <Icon name="arrow" />
                 </span>
                 <span className="quran-chapter-info">
                   <b>{item.name_simple}</b>
