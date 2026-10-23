@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { api, readLocal, saveLocal } from "./api";
 import "./murotal.css";
+import "./murotal-reference.css";
 
-function Icon({ type = "play" }) {
+export function Icon({ type = "play" }) {
   return (
     <svg
       width="22"
@@ -69,6 +70,7 @@ function clock(value) {
 }
 export default function Murotal({ player, majelis }) {
   const [params, setParams] = useSearchParams();
+  const location = useLocation();
   const tab =
     params.get("tab") === "majelis" || params.has("kategori")
       ? "majelis"
@@ -81,6 +83,13 @@ export default function Murotal({ player, majelis }) {
     [error, setError] = useState("");
   const [retry, setRetry] = useState(0),
     [search, setSearch] = useState("");
+  const [qariSearch, setQariSearch] = useState("");
+  useEffect(() => {
+    if (location.hash === "#pemutar-murotal" && tab === "quran")
+      document
+        .getElementById("pemutar-murotal")
+        ?.scrollIntoView({ block: "start" });
+  }, [location.key, tab]);
   useEffect(() => {
     if (tab !== "quran") return;
     const controller = new AbortController();
@@ -167,7 +176,10 @@ export default function Murotal({ player, majelis }) {
             Murotal <span>Al-Qur’an</span>
           </h1>
           <p>Dengarkan ayat suci, tenangkan hati.</p>
-          <Wave />
+          <nav className="murotal-shortcuts" aria-label="Bagian murotal">
+            <a href="#daftar-surah">Daftar surah ↓</a>
+            <a href="#pilihan-qari">Pilih qari ↓</a>
+          </nav>
         </div>
       </header>
       <div className="murotal-tabs" role="tablist" aria-label="Sumber audio">
@@ -197,25 +209,13 @@ export default function Murotal({ player, majelis }) {
           <div className="murotal-majelis">{majelis}</div>
         ) : (
           <div className="murotal-layout">
-            <div className="murotal-directory">
+            <div className="murotal-directory" id="daftar-surah">
               <div className="murotal-filters">
-                <label className="murotal-qari">
-                  Qari
-                  <select
-                    aria-label="Qari"
-                    value={reciter}
-                    disabled={!reciters.length}
-                    onChange={(e) => setReciter(e.target.value)}
-                  >
-                    {!reciters.length && <option value="">Pilih qari</option>}
-                    {reciters.map((r) => (
-                      <option value={r.id} key={r.id}>
-                        {r.name}
-                        {r.style ? ` · ${r.style}` : ""}
-                      </option>
-                    ))}
-                  </select>
-                </label>
+                <a className="murotal-qari-summary" href="#pilihan-qari">
+                  <span>QARI PILIHAN</span>
+                  <b>{qari?.name || "Pilih qari"}</b>
+                  <small>Ganti qari ↗</small>
+                </a>
                 <label className="murotal-search">
                   <Icon type="search" />
                   <input
@@ -308,7 +308,11 @@ export default function Murotal({ player, majelis }) {
                 </>
               )}
             </div>
-            <aside className="murotal-now" aria-label="Panel murotal">
+            <aside
+              className="murotal-now"
+              aria-label="Panel murotal"
+              id="pemutar-murotal"
+            >
               <div className="murotal-now-card">
                 <span className="murotal-now-label">
                   {playingQuran
@@ -317,42 +321,26 @@ export default function Murotal({ player, majelis }) {
                       : "DIJEDA"
                     : "DENGARKAN AL-QUR’AN"}
                 </span>
-                <div className="murotal-rosette" aria-hidden="true">
-                  <svg
-                    viewBox="0 0 100 100"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.2"
-                  >
-                    <rect x="18" y="18" width="64" height="64" rx="8" />
-                    <rect
-                      x="18"
-                      y="18"
-                      width="64"
-                      height="64"
-                      rx="8"
-                      transform="rotate(45 50 50)"
-                    />
-                    <circle cx="50" cy="50" r="28" />
-                    {Array.from({ length: 8 }, (_, i) => (
-                      <ellipse
-                        key={i}
-                        cx="50"
-                        cy="35"
-                        rx="10"
-                        ry="18"
-                        transform={`rotate(${i * 45} 50 50)`}
-                      />
-                    ))}
-                  </svg>
+                <div className="murotal-surah-art">
+                  <span className="murotal-art-ornament" aria-hidden="true">
+                    ✧
+                  </span>
+                  <span className="murotal-art-caption">
+                    LANTUNAN AL-QUR’AN
+                  </span>
+                  <h2>
+                    {playingQuran
+                      ? active.title
+                      : queue[0]?.title || "Pilih surah"}
+                  </h2>
+                  <span className="murotal-art-line" aria-hidden="true" />
+                  <span className="murotal-art-caption">BACAAN UNTUK HATI</span>
                 </div>
-                <h2>{playingQuran ? active.title : "Lantunan penuh makna"}</h2>
-                <p>
+                <p className="murotal-now-author">
                   {playingQuran
                     ? active.author
-                    : "Pilih qari dan putar surah favorit Anda."}
+                    : qari?.name || "Pilih qari untuk mulai mendengarkan"}
                 </p>
-                <Wave />
                 {playingQuran ? (
                   <>
                     <label className="murotal-progress">
@@ -419,9 +407,18 @@ export default function Murotal({ player, majelis }) {
                     {player.error && <p role="alert">{player.error}</p>}
                   </>
                 ) : (
-                  <p className="murotal-now-hint">
-                    Audio diputar secara streaming.
-                  </p>
+                  <div className="murotal-idle-controls">
+                    <p className="murotal-now-hint">
+                      Audio diputar secara streaming.
+                    </p>
+                    <button
+                      className="murotal-start"
+                      disabled={!queue.length || loading}
+                      onClick={() => player.start(queue, 0)}
+                    >
+                      <Icon /> Mulai dengarkan
+                    </button>
+                  </div>
                 )}
               </div>
               <p className="murotal-attribution">
@@ -434,6 +431,82 @@ export default function Murotal({ player, majelis }) {
                   Quran.Foundation
                 </a>
               </p>
+              <section
+                className="murotal-qari-panel"
+                id="pilihan-qari"
+                aria-label="Pilihan qari"
+              >
+                <header>
+                  <div>
+                    <small>SUARA PILIHAN ANDA</small>
+                    <h2>Pilih qari</h2>
+                  </div>
+                  <span>{reciters.length} qari</span>
+                </header>
+                <label className="murotal-search">
+                  <Icon type="search" />
+                  <input
+                    aria-label="Cari qari"
+                    type="search"
+                    placeholder="Cari nama qari…"
+                    value={qariSearch}
+                    onChange={(e) => setQariSearch(e.target.value)}
+                  />
+                </label>
+                <div
+                  className="murotal-qari-cards"
+                  role="radiogroup"
+                  aria-label="Qari"
+                >
+                  {reciters
+                    .filter((r) =>
+                      r.name
+                        .toLocaleLowerCase("id")
+                        .includes(qariSearch.trim().toLocaleLowerCase("id")),
+                    )
+                    .map((r) => (
+                      <label
+                        className={`murotal-qari-card ${String(r.id) === reciter ? "is-selected" : ""}`}
+                        key={r.id}
+                      >
+                        <input
+                          type="radio"
+                          name="qari"
+                          value={r.id}
+                          checked={String(r.id) === reciter}
+                          onChange={() => setReciter(String(r.id))}
+                        />
+                        <span
+                          className="murotal-qari-monogram"
+                          aria-hidden="true"
+                        >
+                          {r.name
+                            .split(/\s+/)
+                            .slice(0, 2)
+                            .map((n) => n[0])
+                            .join("")}
+                        </span>
+                        <span>
+                          <b>{r.name}</b>
+                          <small>{r.style || "Murotal Al-Qur’an"}</small>
+                        </span>
+                        <span className="murotal-qari-check" aria-hidden="true">
+                          {String(r.id) === reciter ? "✓" : ""}
+                        </span>
+                      </label>
+                    ))}
+                </div>
+                {reciters.length > 0 &&
+                  !reciters.some((r) =>
+                    r.name
+                      .toLocaleLowerCase("id")
+                      .includes(qariSearch.trim().toLocaleLowerCase("id")),
+                  ) && (
+                    <p className="murotal-qari-empty">
+                      Qari tidak ditemukan. Coba nama lainnya.
+                    </p>
+                  )}
+              </section>
             </aside>
           </div>
         )}

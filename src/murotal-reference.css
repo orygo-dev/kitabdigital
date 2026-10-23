@@ -1,0 +1,671 @@
+/* Murotal listening interface: emerald player, typographic cover, qari cards. */
+.murotal-page {
+  background: #f3f6f1;
+  border: 0;
+  border-radius: 28px;
+  padding: 18px;
+  box-shadow: none;
+}
+.murotal-hero {
+  background: linear-gradient(125deg, #075749, #078e7d);
+  min-height: 170px;
+  padding: 28px 30px;
+  border: 0;
+  border-radius: 22px;
+}
+.murotal-hero:after {
+  inset: auto -15px -90px auto;
+  width: 240px;
+  height: 240px;
+  border: 34px solid #ffffff09;
+  transform: rotate(45deg);
+  border-radius: 55px;
+}
+.murotal-hero > div {
+  max-width: 100%;
+}
+.murotal-hero h1 {
+  font-family: Georgia, serif;
+  font-size: 38px;
+  margin: 10px 0;
+}
+.murotal-shortcuts {
+  display: flex;
+  gap: 18px;
+  margin-top: 22px;
+}
+.murotal-shortcuts a {
+  color: #f1e3b2;
+  font-size: 11px;
+  text-decoration: none;
+  border-bottom: 1px solid #e0d39b66;
+  padding-bottom: 4px;
+}
+.murotal-tabs {
+  background: #e5ece6;
+  border: 0;
+  border-radius: 30px;
+  max-width: 480px;
+}
+.murotal-tabs button {
+  border-radius: 30px;
+  min-height: 45px;
+}
+.murotal-tabs button[aria-selected="true"] {
+  background: #078977;
+  box-shadow: none;
+  color: white;
+}
+.murotal-layout {
+  grid-template-columns: minmax(0, 1fr) 350px;
+  gap: 25px;
+}
+.murotal-now {
+  position: static;
+  min-width: 0;
+}
+.murotal-now-card {
+  border: 0;
+  box-shadow: 0 12px 30px #063d3020;
+  background: linear-gradient(160deg, #078e7b 0%, #067565 65%, #082c29 100%);
+  border-radius: 25px;
+  padding: 24px 22px 26px;
+}
+.murotal-now-label {
+  border: 0;
+  padding: 0;
+  font-size: 9px;
+  letter-spacing: 1.4px;
+  color: #c5e7d7;
+}
+.murotal-surah-art {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  min-height: 190px;
+  margin: 20px 0 17px;
+  padding: 28px 18px;
+  border: 1px solid #ebd581;
+  border-radius: 18px;
+  overflow: hidden;
+  background: linear-gradient(125deg, #f4e3a1, #d6bd66);
+  color: #224b3c;
+}
+.murotal-surah-art:before,
+.murotal-surah-art:after {
+  content: "";
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border: 1px solid #7f774a22;
+  border-radius: 40px;
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+.murotal-surah-art:after {
+  width: 240px;
+  height: 240px;
+}
+.murotal-art-ornament {
+  color: #7f773d;
+  font-size: 30px;
+  line-height: 1;
+}
+.murotal-art-caption {
+  font-size: 8px;
+  letter-spacing: 2px;
+  color: #52623d;
+  z-index: 1;
+}
+.murotal-surah-art h2 {
+  color: #164d3d;
+  font-size: 35px;
+  line-height: 1.2;
+  margin: 0;
+  overflow-wrap: anywhere;
+  position: relative;
+  z-index: 1;
+}
+.murotal-art-line {
+  width: 42px;
+  height: 1px;
+  background: #948042;
+}
+.murotal-now .murotal-now-author {
+  font-size: 13px;
+  color: #f5f1d9;
+  margin: 0 0 14px;
+  min-height: 22px;
+}
+.murotal-progress {
+  margin: 12px 0 0;
+}
+.murotal-progress > span {
+  font-size: 11px;
+  color: #e0eee3;
+}
+.murotal-controls {
+  gap: 13px;
+  margin: 20px 0 24px;
+  position: relative;
+}
+.murotal-controls button {
+  color: #e9f5e9;
+}
+.murotal-controls button:first-child {
+  position: absolute;
+  left: 0;
+  bottom: -45px;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 6px;
+}
+.murotal-controls .murotal-main-play {
+  background: #fffdf0;
+  color: #08725f;
+  border: 0;
+  outline: 0;
+  width: 64px;
+  height: 64px;
+  min-width: 64px;
+  box-shadow: 0 6px 20px #023d3030;
+}
+.murotal-main-play svg {
+  width: 28px;
+  height: 28px;
+}
+.murotal-volume {
+  padding-left: 46px;
+  font-size: 10px;
+  gap: 9px;
+}
+.murotal-now .murotal-attribution {
+  background: transparent;
+  border: 0;
+  padding: 15px 8px;
+  color: #52715d;
+  font-size: 10px;
+}
+.murotal-start {
+  display: inline-flex;
+  gap: 9px;
+  align-items: center;
+  background: #fff9df;
+  color: #086653;
+  border: 0;
+  border-radius: 30px;
+  padding: 13px 20px;
+  min-height: 48px;
+  margin-top: 15px;
+}
+.murotal-start:disabled {
+  opacity: 0.5;
+}
+.murotal-qari-panel {
+  background: #fffefa;
+  border-radius: 22px;
+  padding: 19px 16px;
+  border: 1px solid #e7e8dc;
+}
+.murotal-qari-panel header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.murotal-qari-panel header small {
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  color: #70816c;
+}
+.murotal-qari-panel header h2 {
+  font:
+    24px Georgia,
+    serif;
+  color: #164d3d;
+  margin: 5px 0 0;
+}
+.murotal-qari-panel header > span {
+  font-size: 10px;
+  color: #78876f;
+}
+.murotal-qari-panel .murotal-search {
+  margin-bottom: 14px;
+}
+.murotal-qari-panel .murotal-search input {
+  border-radius: 12px;
+  background: #f7f8f1;
+  border-color: #e0e5d9;
+}
+.murotal-qari-cards {
+  display: grid;
+  gap: 9px;
+  max-height: 270px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 3px;
+  scrollbar-width: thin;
+}
+.murotal-qari-card {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 13px 12px;
+  background: #f3f5ef;
+  border: 1px solid transparent;
+  border-radius: 17px;
+  cursor: pointer;
+  min-height: 76px;
+}
+.murotal-qari-card input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+.murotal-qari-card:has(input:focus-visible) {
+  outline: 3px solid #b6943c;
+  outline-offset: 1px;
+}
+.murotal-qari-card.is-selected {
+  background: #e4f2e8;
+  border-color: #13917b;
+}
+.murotal-qari-card > span:nth-of-type(2) {
+  flex: 1;
+  min-width: 0;
+}
+.murotal-qari-card b {
+  display: block;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #20483b;
+  overflow-wrap: anywhere;
+}
+.murotal-qari-card small {
+  display: block;
+  font-size: 10px;
+  margin-top: 4px;
+  color: #71816b;
+}
+.murotal-qari-monogram {
+  width: 42px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: linear-gradient(145deg, #e6d6a5, #c0a567);
+  border-radius: 13px;
+  color: #35543a;
+  font:
+    18px Georgia,
+    serif;
+}
+.murotal-qari-check {
+  width: 19px;
+  height: 19px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border: 1px solid #aebdae;
+  border-radius: 50%;
+  font-size: 12px;
+  color: white;
+}
+.is-selected .murotal-qari-check {
+  background: #0a8872;
+  border-color: #0a8872;
+}
+.murotal-qari-empty {
+  font-size: 12px;
+  color: #697a63;
+  line-height: 1.7;
+}
+.murotal-qari-summary {
+  display: block;
+  text-decoration: none;
+  color: #204f3d;
+  flex: 1;
+  min-width: 0;
+}
+.murotal-qari-summary span {
+  display: block;
+  font-size: 8px;
+  letter-spacing: 1.4px;
+  color: #718069;
+}
+.murotal-qari-summary b {
+  display: block;
+  font-size: 13px;
+  margin: 6px 0;
+}
+.murotal-qari-summary small {
+  font-size: 10px;
+  color: #087969;
+}
+.murotal-directory {
+  scroll-margin-top: 25px;
+}
+#pilihan-qari,
+#pemutar-murotal {
+  scroll-margin-top: 25px;
+}
+.murotal-filters {
+  align-items: center;
+  background: #fffefa;
+  border-radius: 17px;
+  padding: 17px;
+  margin-bottom: 22px;
+}
+.murotal-list-title {
+  margin: 0 6px 17px;
+}
+.murotal-surah {
+  border: 0;
+  background: #fffefa;
+  box-shadow: none;
+  border-radius: 17px;
+  min-height: 82px;
+}
+.murotal-surah.is-current {
+  background: #d7eee1;
+  border: 0;
+  box-shadow: inset 3px 0 #09937c;
+}
+.murotal-number {
+  border: 0;
+  outline: 0;
+  background: #e7eee1;
+  color: #41634d;
+  border-radius: 50%;
+  font-size: 15px;
+}
+.is-current .murotal-number {
+  background: #0c8b72;
+  color: white;
+}
+.murotal-play {
+  background: #078975;
+  box-shadow: none;
+}
+.murotal-majelis .audio-row {
+  background: #fffefa;
+  border: 0;
+  border-radius: 20px;
+}
+aside.player {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  max-width: 760px;
+  min-height: 104px;
+  padding: 14px 18px 39px;
+  border: 1px solid #66a38d;
+  border-radius: 24px;
+  background: linear-gradient(115deg, #078b77, #064b3e);
+  box-shadow: 0 8px 30px #063d3030;
+}
+.player .player-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  max-width: none;
+  text-decoration: none;
+  color: #fff9e9;
+}
+.player-title > span:last-child {
+  min-width: 0;
+}
+.player .player-title b {
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.player .player-title small {
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #c5e4d5;
+  margin-top: 4px;
+}
+.player-emblem {
+  width: 39px;
+  height: 43px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid #dfd18d;
+  border-radius: 13px;
+  background: #e3d18b;
+  color: #255343;
+  font:
+    19px Georgia,
+    serif;
+}
+.player .player-controls {
+  flex: initial;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 5px;
+}
+.player .player-controls > button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 38px;
+  min-height: 38px;
+  padding: 7px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: white;
+}
+.player .player-controls > .primary {
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  background: #fffdf0;
+  color: #086e59;
+}
+.player .player-controls > .player-repeat {
+  position: absolute;
+  right: 14px;
+  bottom: 4px;
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  padding: 6px;
+  color: #d7eadb;
+}
+.player .player-repeat[aria-pressed="true"] {
+  background: #dfcc83;
+  color: #184b3b;
+}
+.player .seek {
+  position: absolute;
+  left: 18px;
+  right: 56px;
+  bottom: 9px;
+  margin: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 9px;
+  font-size: 9px;
+  flex-wrap: nowrap;
+  color: #dcebdc;
+}
+.player .seek input {
+  min-width: 0;
+  flex: 1;
+  width: 100%;
+  min-height: 20px;
+  accent-color: #ead48a;
+}
+.player > small[role="alert"] {
+  grid-column: 1/-1;
+  font-size: 11px;
+  margin: 0;
+}
+.player button:focus-visible,
+.player-title:focus-visible {
+  outline: 2px solid #f3dc91;
+  outline-offset: 3px;
+}
+@media (max-width: 1000px) {
+  .murotal-layout {
+    grid-template-columns: minmax(0, 1fr) 310px;
+    gap: 18px;
+  }
+  .murotal-qari-summary {
+    flex-basis: 100%;
+  }
+  .murotal-surah-art h2 {
+    font-size: 31px;
+  }
+}
+@media (max-width: 700px) {
+  .murotal-page {
+    padding: 10px;
+    border-radius: 23px;
+    margin-top: 12px;
+  }
+  .murotal-hero {
+    min-height: 155px;
+    padding: 24px 20px;
+    border-radius: 19px;
+    background: linear-gradient(125deg, #075749, #078e7d);
+  }
+  .murotal-hero h1 {
+    font-size: 31px;
+    max-width: 100%;
+    text-shadow: none;
+  }
+  .murotal-hero h1 span {
+    display: inline;
+  }
+  .murotal-hero p {
+    max-width: 100%;
+    font-size: 12px;
+  }
+  .murotal-shortcuts {
+    margin-top: 18px;
+    gap: 20px;
+  }
+  .murotal-shortcuts a {
+    font-size: 10px;
+  }
+  .murotal-tabs {
+    margin: 15px 0 20px;
+  }
+  .murotal-tabs button {
+    min-height: 44px;
+    font-size: 11px;
+  }
+  .murotal-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+  }
+  .murotal-now {
+    order: -1;
+    width: 100%;
+  }
+  .murotal-now-card {
+    padding: 23px 20px 25px;
+    border-radius: 24px;
+  }
+  .murotal-surah-art {
+    min-height: 190px;
+    margin: 18px 0;
+    padding: 25px 15px;
+  }
+  .murotal-surah-art h2 {
+    font-size: 36px;
+  }
+  .murotal-now-card,
+  .murotal-attribution {
+    max-width: none;
+  }
+  .murotal-qari-cards {
+    max-height: 245px;
+  }
+  .murotal-directory {
+    width: 100%;
+  }
+  .murotal-qari-panel {
+    padding: 18px 13px;
+  }
+  .murotal-qari-card b {
+    font-size: 12px;
+  }
+  aside.player {
+    bottom: 80px;
+    width: calc(100% - 20px);
+    gap: 6px;
+    min-height: 102px;
+    padding: 12px 12px 36px;
+    border-radius: 22px;
+  }
+  .player .player-title {
+    gap: 8px;
+    flex-basis: auto;
+  }
+  .player-emblem {
+    width: 31px;
+    height: 36px;
+    font-size: 16px;
+    border-radius: 11px;
+  }
+  .player .player-title b {
+    font-size: 12px;
+  }
+  .player .player-title small {
+    font-size: 9px;
+  }
+  .player .player-controls {
+    gap: 1px;
+  }
+  .player .player-controls > button {
+    width: 32px;
+    height: 36px;
+    min-height: 36px;
+    padding: 6px;
+  }
+  .player .player-controls > .primary {
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+  }
+  .player .seek {
+    left: 14px;
+    right: 52px;
+    bottom: 8px;
+    font-size: 8px;
+    gap: 6px;
+  }
+  .player .player-controls > .player-repeat {
+    right: 10px;
+    bottom: 3px;
+    width: 32px;
+    min-height: 32px;
+  }
+}

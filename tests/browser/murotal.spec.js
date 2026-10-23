@@ -57,7 +57,9 @@ test("Murotal: qari, pencarian, putar, navigasi, volume dan pemutar persisten", 
   page.on("pageerror", (e) => errors.push(e.message));
   await mock(page);
   await page.goto("/murotal");
-  await expect(page.getByLabel("Qari", { exact: true })).toHaveValue("7");
+  await expect(
+    page.getByRole("radio", { name: /Mishary Rashid Alafasy/ }),
+  ).toBeChecked();
   await expect(
     page.getByRole("button", { name: "Putar Ali Imran", exact: true }),
   ).toBeDisabled();
@@ -113,13 +115,13 @@ test("Murotal: qari, pencarian, putar, navigasi, volume dan pemutar persisten", 
     .poll(() => page.locator("audio").evaluate((a) => !a.paused))
     .toBe(true);
   await page.getByRole("link", { name: "♫ Murotal", exact: true }).click();
-  await page.getByLabel("Qari", { exact: true }).selectOption("8");
+  await page.getByRole("radio", { name: /Qari Kedua/ }).check();
   await page
     .getByRole("button", { name: "Putar Al-Fatihah", exact: true })
     .click();
   await expect(page.locator(".player-title small")).toHaveText("Qari Kedua");
   await page.reload();
-  await expect(page.getByLabel("Qari", { exact: true })).toHaveValue("8");
+  await expect(page.getByRole("radio", { name: /Qari Kedua/ })).toBeChecked();
   expect(errors).toEqual([]);
 });
 test("Murotal: gagal, coba lagi, koleksi kosong dan layar ponsel", async ({
@@ -160,6 +162,53 @@ test("Murotal: gagal, coba lagi, koleksi kosong dan layar ponsel", async ({
   await page.getByRole("tab", { name: "Audio Majelis" }).click();
   await expect(page.getByText("Belum ada koleksi yang sesuai.")).toBeVisible();
   await expect(page).toHaveURL(/tab=majelis/);
+});
+
+test("Murotal: kartu qari, sampul judul dan pemutar mini ponsel", async ({
+  page,
+}) => {
+  await mock(page);
+  await page.setViewportSize({ width: 375, height: 900 });
+  await page.goto("/murotal");
+  await expect(page.locator(".murotal-surah-art h2")).toHaveText("Al-Fatihah");
+  await page.getByLabel("Cari qari").fill("kedua");
+  await expect(page.getByRole("radio")).toHaveCount(1);
+  await page.getByRole("radio", { name: /Qari Kedua/ }).check();
+  await page.getByLabel("Cari qari").fill("tidak ditemukan");
+  await expect(
+    page.getByText("Qari tidak ditemukan. Coba nama lainnya."),
+  ).toBeVisible();
+  await page.getByLabel("Cari qari").fill("");
+  await page.getByRole("button", { name: "Mulai dengarkan" }).click();
+  await expect(page.locator(".player-title small")).toHaveText("Qari Kedua");
+  for (const width of [375, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    expect(
+      await page
+        .locator(".player")
+        .evaluate((el) => el.getBoundingClientRect().height),
+    ).toBeLessThan(130);
+    await page
+      .locator(".player")
+      .getByRole("button", { name: "Audio berikutnya" })
+      .click();
+    await expect(page.locator(".player-title b")).toHaveText("Al-Baqarah");
+    await page
+      .locator(".player")
+      .getByRole("button", { name: "Audio sebelumnya" })
+      .click();
+  }
+  await page.getByRole("link", { name: "▤ Kitab", exact: true }).click();
+  await page.locator(".player-title").click();
+  await expect(page).toHaveURL(/murotal#pemutar-murotal/);
+  await expect(
+    page.getByRole("button", { name: "Jeda murotal", exact: true }),
+  ).toBeInViewport();
 });
 
 test("Murotal: pulih setelah CDN gagal, satu rekaman, dan berganti ke Audio Majelis", async ({

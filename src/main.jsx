@@ -29,7 +29,7 @@ import Quran from "./quran";
 import Home from "./home";
 import BookLibrary from "./book-library";
 import "./style.css";
-import Murotal from "./murotal";
+import Murotal, { Icon as AudioIcon } from "./murotal";
 
 const AudioContext = createContext();
 const defaults = {
@@ -183,22 +183,45 @@ function AudioProvider({ children }) {
       />
       {current && (
         <aside className="player" aria-label="Pemutar audio">
-          <div className="player-title">
-            <b>{current.title}</b>
-            <small>{current.author || "Audio majelis"}</small>
-          </div>
+          <Link
+            className="player-title"
+            to={
+              current.source === "quran"
+                ? "/murotal#pemutar-murotal"
+                : "/murotal?tab=majelis"
+            }
+          >
+            <span className="player-emblem" aria-hidden="true">
+              {current.chapter_id
+                ? String(current.chapter_id).padStart(2, "0")
+                : "♫"}
+            </span>
+            <span>
+              <b>{current.title}</b>
+              <small>{current.author || "Audio majelis"}</small>
+            </span>
+          </Link>
           <div className="player-controls">
             <button onClick={() => step(-1)} aria-label="Audio sebelumnya">
-              ⏮
+              <AudioIcon type="previous" />
             </button>
-            <button className="primary" onClick={toggle}>
-              {playing ? "Jeda" : "Putar"}
+            <button
+              className="primary"
+              onClick={toggle}
+              aria-label={playing ? "Jeda" : "Putar"}
+            >
+              <AudioIcon type={playing ? "pause" : "play"} />
             </button>
             <button onClick={() => step(1)} aria-label="Audio berikutnya">
-              ⏭
+              <AudioIcon type="next" />
             </button>
-            <button aria-pressed={repeat} onClick={() => setRepeat(!repeat)}>
-              Ulang {repeat ? "✓" : ""}
+            <button
+              className="player-repeat"
+              aria-label="Ulang"
+              aria-pressed={repeat}
+              onClick={() => setRepeat(!repeat)}
+            >
+              <AudioIcon type="repeat" />
             </button>
             <label className="seek">
               {formatTime(time)}
@@ -208,9 +231,7 @@ function AudioProvider({ children }) {
                 min="0"
                 max={Number.isFinite(duration) ? duration : 0}
                 value={time}
-                onChange={(e) =>
-                  (ref.current.currentTime = Number(e.target.value))
-                }
+                onChange={(e) => seek(e.target.value)}
               />
               {formatTime(duration)}
             </label>

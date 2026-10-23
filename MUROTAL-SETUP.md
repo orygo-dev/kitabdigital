@@ -2,6 +2,8 @@
 
 Menu Murotal memiliki tab Murotal Al-Qur’an dan Audio Majelis. Audio unggahan, kategori, dan daftar putar majelis tetap tersedia di tab kedua. Tautan `/murotal?tab=majelis` membuka tab tersebut; tautan kategori lama juga tetap membuka koleksi majelis.
 
+Tampilan pemutar memakai gradasi hijau dengan kartu judul surah sebagai pengganti foto, kontrol putar besar, serta kartu pilihan qari yang dapat dicari. Pada ponsel, panel pemutar ditampilkan lebih dahulu. Tautan Daftar surah dan Pilih qari memudahkan perpindahan bagian. Pemutar mini menampilkan nomor surah, judul, qari, navigasi, ulangi dan progres; ketuk judulnya untuk membuka panel pemutar. Penyorotan ayat otomatis belum diterapkan.
+
 Integrasi menggunakan `QF_CLIENT_ID`, `QF_CLIENT_SECRET`, dan `QF_ENV` yang sama dengan menu Al-Qur’an. Tidak ada variabel baru atau migrasi database. Kredensial dan token hanya digunakan di server. Metadata memakai cache server satu jam. Aplikasi mengambil daftar qari dari `/resources/chapter_reciters` dan audio dari `/chapter_recitations/{reciter_id}` melalui Content API; ID qari ini berbeda dari ID audio per ayat.
 
 MP3 diputar langsung melalui URL HTTPS CDN Quran.Foundation. Tidak perlu mengunggah MP3 ke server aplikasi. Ketersediaan surah mengikuti rekaman qari dan lingkungan API; surah tanpa rekaman diberi keterangan dan tombol nonaktif. Koneksi internet diperlukan. Fitur unduh/offline tidak diaktifkan untuk audio Quran.Foundation.
