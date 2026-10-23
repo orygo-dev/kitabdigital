@@ -27,6 +27,7 @@ import Reader from "./reader";
 import Admin from "./admin";
 import Quran from "./quran";
 import Home from "./home";
+import BookLibrary from "./book-library";
 import "./style.css";
 
 const AudioContext = createContext();
@@ -219,18 +220,27 @@ function BookCard({ book, compact = false }) {
   }, [book.file]);
   return (
     <article className={`book-card ${compact ? "home-book-card" : ""}`}>
-      <Link to={"/kitab/" + book.id}>
+      <Link to={"/kitab/" + book.id} aria-label={`Buka kitab ${book.title}`}>
         <Cover item={book} />
+        {!compact && book.featured && (
+          <span className="library-featured-badge">✧ Pilihan majelis</span>
+        )}
       </Link>
       <div className="card-body">
         <small>{book.category_name || "Kitab"}</small>
         <h3>
           <Link to={"/kitab/" + book.id}>{book.title}</Link>
         </h3>
-        {!compact && book.author && <p>{book.author}</p>}
+        {!compact && book.author && (
+          <p className="book-author">{book.author}</p>
+        )}
         {!compact && <p className="description">{book.description}</p>}
         <div className="actions">
-          <Link className="button primary" to={"/kitab/" + book.id}>
+          <Link
+            className="button primary"
+            aria-label="Baca kitab"
+            to={"/kitab/" + book.id}
+          >
             Baca kitab
           </Link>
           {!compact && book.downloadable && (
@@ -250,7 +260,14 @@ function BookCard({ book, compact = false }) {
             </button>
           )}
         </div>
-        {status && <small role="status">{status}</small>}
+        {status && (
+          <small
+            role="status"
+            className={`book-status ${status === "Tersimpan offline" ? "book-status-saved" : ""}`}
+          >
+            {status}
+          </small>
+        )}
       </div>
     </article>
   );
@@ -563,7 +580,10 @@ function App() {
           />
           <Route path="/alquran" element={<Quran />} />
           <Route path="/alquran/:id" element={<Quran />} />
-          <Route path="/kitab" element={<Library key="books" data={data} />} />
+          <Route
+            path="/kitab"
+            element={<BookLibrary data={data} BookCard={BookCard} />}
+          />
           <Route
             path="/murotal"
             element={<Library key="audio" data={data} audio />}
