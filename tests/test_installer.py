@@ -87,7 +87,8 @@ def test_no_ssl_wrong_domain_and_existing_proxy_are_rejected():
             insert_include(source, "kitab.contoh.id", "/etc/kitab/apache-proxy.conf")
 
 
-def test_config_is_backed_up_validated_and_reloaded(tmp_path):
+@pytest.mark.parametrize("port", [8000, 8001, 8100])
+def test_config_is_backed_up_validated_and_reloaded(tmp_path, port):
     vhost = tmp_path / "website.conf"
     vhost.write_text(VHOST)
     snippet = tmp_path / "proxy.conf"
@@ -99,11 +100,11 @@ def test_config_is_backed_up_validated_and_reloaded(tmp_path):
 
     with patch("deploy.aapanel.subprocess.run", side_effect=run):
         backup = configure(
-            vhost, snippet, "kitab.contoh.id", "apachectl", tmp_path / "backups"
+            vhost, snippet, "kitab.contoh.id", "apachectl", tmp_path / "backups", port
         )
     assert backup.read_text() == VHOST
     assert "IncludeOptional" in vhost.read_text()
-    assert snippet.read_text() == proxy_config()
+    assert snippet.read_text() == proxy_config(port)
     assert calls == [
         ["apachectl", "-t"],
         ["apachectl", "-t"],
@@ -229,6 +230,28 @@ def test_distribution_compatibility(distribution, version, accepted):
     assert (result.returncode == 0) == accepted, result.stderr
 
 
+@pytest.mark.parametrize(
+    "mode,expected", [("free", 8000), ("busy", 8001), ("full", None), ("error", None)]
+)
+def test_port_selection_skips_occupied_ports_and_fails_closed(mode, expected):
+    result = bash_run(
+        "ss(){ "
+        + {
+            "free": ":;",
+            "busy": '[[ "$*" != *":8000 )" ]] || echo occupied;',
+            "full": "echo occupied;",
+            "error": "return 2;",
+        }[mode]
+        + ' }; select_port; echo "SELECTED=$APP_PORT"'
+    )
+    if expected is None:
+        assert result.returncode != 0
+        assert "SELECTED=" not in result.stdout
+    else:
+        assert result.returncode == 0, result.stderr
+        assert f"SELECTED={expected}" in result.stdout
+
+
 def test_check_mode_performs_no_installation():
     result = bash_run("""check_host(){ :; }
 ask_domain(){ :; }
@@ -251,6 +274,7 @@ check_root(){ :; }
 check_terminal(){ :; }
 systemctl(){ return 1; }
 ss(){ :; }
+select_port(){ :; }
 prerequisites(){ echo kebutuhan; }
 get_project(){ echo proyek; }
 install_python(){ echo python; }

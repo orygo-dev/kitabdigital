@@ -115,11 +115,11 @@ def atomic_write(path, content, mode=0o644):
         Path(temporary).unlink(missing_ok=True)
 
 
-def configure(vhost, include_file, domain, apachectl, backups):
+def configure(vhost, include_file, domain, apachectl, backups, port=8000):
     vhost, include_file, backups = map(Path, (vhost, include_file, backups))
     original = vhost.read_text(encoding="utf-8")
     updated = insert_include(original, domain, include_file)
-    snippet = proxy_config()
+    snippet = proxy_config(port)
     previous_snippet = (
         include_file.read_text(encoding="utf-8") if include_file.exists() else None
     )
@@ -157,10 +157,16 @@ def main():
     parser.add_argument("--apachectl", required=True)
     parser.add_argument("--include", default="/etc/kitab/apache-proxy.conf")
     parser.add_argument("--backups", default="/var/backups/kitab")
+    parser.add_argument("--port", type=int, default=8000)
     args = parser.parse_args()
     try:
         backup = configure(
-            args.vhost, args.include, args.domain, args.apachectl, args.backups
+            args.vhost,
+            args.include,
+            args.domain,
+            args.apachectl,
+            args.backups,
+            args.port,
         )
     except (OSError, ValueError, subprocess.CalledProcessError) as exc:
         raise SystemExit(f"Konfigurasi Apache gagal; perubahan dipulihkan: {exc}")

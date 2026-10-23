@@ -144,6 +144,7 @@ class NativeInstallerChecks(unittest.TestCase):
                 "APP_DIR": app,
                 "DATA_DIR": data,
                 "ENV_FILE": environment,
+                "APP_PORT": 8001,
             }.items():
                 template = template.replace("$" + key, str(value))
             template = template.replace(

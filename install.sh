@@ -17,6 +17,7 @@ SERVICE_STARTED=0
 SELINUX_CHANGED=0
 APACHECTL=''
 VHOST=''
+APP_PORT=8000
 
 say() { printf '\n%s\n' "$*"; }
 die() { printf '\nGagal: %s\n' "$*" >&2; exit 1; }
@@ -35,7 +36,7 @@ Jalankan sebagai root setelah website dan SSL domain dibuat di aaPanel.
   bash install.sh --check --domain kitab.contoh.id   Pemeriksaan tanpa perubahan
 
 Didukung: Ubuntu 20.04+, Debian 12+, AlmaLinux/Rocky/RHEL 9+; x86_64/ARM64.
-Port aplikasi 8000 hanya dipakai di localhost. Database/unggahan disimpan terpisah.
+Port aplikasi dipilih otomatis di localhost. Database/unggahan disimpan terpisah.
 HELP
 }
 
@@ -191,6 +192,20 @@ build_frontend() {
     [[ -f "$APP_DIR/dist/index.html" && -f "$APP_DIR/dist/sw.js" ]] || die 'Build antarmuka belum lengkap.'
 }
 
+select_port() {
+    local candidate listeners
+    command -v ss >/dev/null || die 'Perintah ss belum tersedia. Pasang paket iproute2 lalu ulangi installer.'
+    for candidate in {8000..8100}; do
+        listeners="$(ss -lntH "( sport = :$candidate )")" || die 'Tidak dapat memeriksa port lokal server.'
+        if [[ -z "$listeners" ]]; then
+            APP_PORT="$candidate"
+            say "Port lokal aplikasi: $APP_PORT"
+            return
+        fi
+    done
+    die 'Tidak ada port kosong dalam rentang 8000–8100.'
+}
+
 configure_service() {
     say '[5/7] Menyiapkan konfigurasi dan administrator…'
     if [[ ! -e "$ENV_FILE" ]]; then
@@ -214,7 +229,7 @@ User=kitab
 Group=kitab
 WorkingDirectory=$APP_DIR
 EnvironmentFile=$ENV_FILE
-ExecStart=$APP_DIR/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8000 --proxy-headers --forwarded-allow-ips=127.0.0.1
+ExecStart=$APP_DIR/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port $APP_PORT --proxy-headers --forwarded-allow-ips=127.0.0.1
 Restart=on-failure
 RestartSec=3
 UMask=0077
@@ -231,7 +246,7 @@ SERVICE
     systemctl enable --now kitab
     local ready=0 attempt
     for attempt in {1..30}; do
-        if systemctl is-active --quiet kitab && curl --silent --fail --max-time 3 http://127.0.0.1:8000/api/settings >/dev/null; then ready=1; break; fi
+        if systemctl is-active --quiet kitab && curl --silent --fail --max-time 3 "http://127.0.0.1:$APP_PORT/api/settings" >/dev/null; then ready=1; break; fi
         sleep 1
     done
     [[ "$ready" -eq 1 ]] || die 'Aplikasi belum dapat dijalankan. Periksa: journalctl -u kitab -n 50 --no-pager'
@@ -245,7 +260,7 @@ configure_apache() {
             SELINUX_CHANGED=1
         fi
     fi
-    "$APP_DIR/.venv/bin/python" -m deploy.aapanel --domain "$DOMAIN" --vhost "$VHOST" --apachectl "$APACHECTL"
+    "$APP_DIR/.venv/bin/python" -m deploy.aapanel --domain "$DOMAIN" --vhost "$VHOST" --apachectl "$APACHECTL" --port "$APP_PORT"
 }
 
 finish() {
@@ -257,7 +272,7 @@ Aplikasi : https://$DOMAIN
 Admin    : https://$DOMAIN/admin
 
 Masuk memakai akun yang Anda buat tadi.
-Data disimpan di $DATA_DIR. Port 8000 tidak perlu dibuka ke internet.
+Data disimpan di $DATA_DIR. Port $APP_PORT tidak perlu dibuka ke internet.
 Log bantuan: journalctl -u kitab -n 50 --no-pager"
 }
 
@@ -285,7 +300,7 @@ main() {
         fi
         die 'Layanan kitab sudah aktif dari instalasi lain/belum selesai. Hentikan layanan tersebut sebelum melanjutkan agar tidak tertimpa.'
     fi
-    if command -v ss >/dev/null && ss -lntH '( sport = :8000 )' | grep -q .; then die 'Port lokal 8000 sedang dipakai aplikasi lain.'; fi
+    select_port
     check_terminal
     trap cleanup EXIT
     prerequisites

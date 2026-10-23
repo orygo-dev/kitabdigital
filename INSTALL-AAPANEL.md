@@ -16,7 +16,7 @@ curl -fsSL https://raw.githubusercontent.com/orygo-dev/kitabdigital/main/install
 
 Isi **domain yang sama dengan website aaPanel**, nama pengguna admin, dan kata sandi. Tunggu sampai muncul **Instalasi selesai**. Kata sandi tidak dicetak atau disimpan sebagai teks biasa.
 
-Installer mengunduh proyek, memasang Python khusus aplikasi dan Node.js jika dibutuhkan, membangun frontend, membuat database, menyalakan layanan otomatis, lalu memasang reverse proxy Apache. Tidak perlu mengedit konfigurasi atau membuka port 8000.
+Installer mengunduh proyek, memasang Python khusus aplikasi dan Node.js jika dibutuhkan, membangun frontend, membuat database, menyalakan layanan otomatis, lalu memasang reverse proxy Apache. Port lokal dipilih otomatis dari rentang 8000–8100; port yang sudah dipakai dilewati. Tidak perlu mengedit konfigurasi atau membuka port aplikasi ke internet.
 
 ## 3. Buka aplikasi
 
@@ -51,5 +51,5 @@ journalctl -u kitab -n 50 --no-pager
 
 ## Status pengujian installer
 
-42 uji otomatis lulus, mencakup kompatibilitas versi distribusi, validasi domain, konfigurasi HTTPS, backup/rollback Apache, urutan instalasi, penghentian saat gagal, serta pemeliharaan akun lama. Empat pemeriksaan tambahan lulus di Linux: sintaks Bash, penerimaan konfigurasi oleh Apache nyata, validasi unit systemd, dan kerahasiaan prompt kata sandi melalui `runuser`. Pemeriksaan tersebut memakai konfigurasi sementara dan tidak memasang atau me-reload layanan sistem mesin uji. Instalasi lengkap pada server aaPanel pengguna belum dijalankan; `--check` memeriksa prasyarat server sebelum pemasangan.
+48 uji otomatis lulus, mencakup kompatibilitas versi distribusi, validasi domain, konfigurasi HTTPS, backup/rollback Apache, urutan instalasi, penghentian saat gagal, serta pemeliharaan akun lama. Empat pemeriksaan tambahan lulus di Linux: sintaks Bash, penerimaan konfigurasi oleh Apache nyata, validasi unit systemd, dan kerahasiaan prompt kata sandi melalui `runuser`. Pemeriksaan tersebut memakai konfigurasi sementara dan tidak memasang atau me-reload layanan sistem mesin uji. Instalasi lengkap pada server aaPanel pengguna belum dijalankan; `--check` memeriksa prasyarat server sebelum pemasangan.
 
