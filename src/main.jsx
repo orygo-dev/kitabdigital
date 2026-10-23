@@ -26,6 +26,7 @@ import {
 import Reader from "./reader";
 import Admin from "./admin";
 import Quran from "./quran";
+import Home from "./home";
 import "./style.css";
 
 const AudioContext = createContext();
@@ -205,7 +206,7 @@ function Cover({ item }) {
     </div>
   );
 }
-function BookCard({ book }) {
+function BookCard({ book, compact = false }) {
   const [status, setStatus] = useState("");
   useEffect(() => {
     let active = true;
@@ -217,7 +218,7 @@ function BookCard({ book }) {
     };
   }, [book.file]);
   return (
-    <article className="book-card">
+    <article className={`book-card ${compact ? "home-book-card" : ""}`}>
       <Link to={"/kitab/" + book.id}>
         <Cover item={book} />
       </Link>
@@ -226,13 +227,13 @@ function BookCard({ book }) {
         <h3>
           <Link to={"/kitab/" + book.id}>{book.title}</Link>
         </h3>
-        {book.author && <p>{book.author}</p>}
-        <p className="description">{book.description}</p>
+        {!compact && book.author && <p>{book.author}</p>}
+        {!compact && <p className="description">{book.description}</p>}
         <div className="actions">
           <Link className="button primary" to={"/kitab/" + book.id}>
             Baca kitab
           </Link>
-          {book.downloadable && (
+          {!compact && book.downloadable && (
             <button
               disabled={status === "Mengunduh…"}
               onClick={async () => {
@@ -254,8 +255,50 @@ function BookCard({ book }) {
     </article>
   );
 }
-function AudioList({ items }) {
+function AudioList({ items, compact = false }) {
   const { start, current } = useContext(AudioContext);
+  if (compact)
+    return (
+      <div className="home-audio-list">
+        {items.map((item, index) => (
+          <article className="home-audio-row" key={item.id}>
+            <button
+              type="button"
+              className="home-play"
+              aria-label={`${current?.id === item.id ? "Putar ulang" : "Putar"}: ${item.title}`}
+              onClick={() => start(items, index)}
+            >
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path d="m8 4 12 8-12 8V4Z" />
+              </svg>
+            </button>
+            <div>
+              <h3>{item.title}</h3>
+              <p>{item.author || item.category_name || "Audio majelis"}</p>
+            </div>
+            <svg
+              className="home-waveform"
+              width="32"
+              height="26"
+              viewBox="0 0 32 26"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              aria-hidden="true"
+            >
+              <path d="M2 11v4m4-7v10m4-13v16m4-19v22m4-17v12m4-15v18m4-13v8m4-5v2" />
+            </svg>
+          </article>
+        ))}
+      </div>
+    );
   return (
     <div className="audio-list">
       {items.map((item, i) => (
@@ -373,88 +416,6 @@ function Empty({ text }) {
       <span>۞</span>
       <p>{text}</p>
     </div>
-  );
-}
-function Home({ data, settings }) {
-  const progress = readLocal("reading-progress", {}),
-    continued = data.books
-      .filter((b) => progress[b.id])
-      .sort((a, b) => progress[b.id].updated - progress[a.id].updated);
-  const featured = data.books.filter((b) => b.featured),
-    featuredAudio = data.audio.filter((a) => a.featured);
-  return (
-    <>
-      <section className="hero">
-        <div>
-          <small>RUANG IBADAH BERSAMA</small>
-          <h1>{settings.welcome}</h1>
-          <p>{settings.description}</p>
-          <Link className="button cream" to="/kitab">
-            Mulai membaca <span>←</span>
-          </Link>
-        </div>
-        <div className="ornament" aria-hidden="true">
-          ۞
-        </div>
-      </section>
-      <div className="section-heading">
-        <h2>Kitab pilihan</h2>
-        <Link to="/kitab">Lihat semua →</Link>
-      </div>
-      {featured.length ? (
-        <div className="book-grid">
-          {featured.map((b) => (
-            <BookCard key={b.id} book={b} />
-          ))}
-        </div>
-      ) : (
-        <Empty text="Kitab pilihan akan ditampilkan setelah diatur oleh pengurus." />
-      )}
-      <div className="section-heading">
-        <h2>Jelajahi kategori</h2>
-      </div>
-      <div className="chips">
-        {data.bc.length ? (
-          data.bc.map((c) => (
-            <Link key={c.id} to={"/kitab?kategori=" + c.id}>
-              ۞ {c.name}
-            </Link>
-          ))
-        ) : (
-          <p>Belum ada kategori kitab.</p>
-        )}
-      </div>
-      {continued.length > 0 && (
-        <>
-          <div className="section-heading">
-            <h2>Lanjutkan membaca</h2>
-          </div>
-          <div className="continue-list">
-            {continued.slice(0, 4).map((b) => (
-              <Link key={b.id} to={"/kitab/" + b.id}>
-                <b>{b.title}</b>
-                <span>Halaman {progress[b.id].page}</span>
-              </Link>
-            ))}
-          </div>
-        </>
-      )}
-      <div className="section-heading">
-        <h2>{featuredAudio.length ? "Audio pilihan" : "Audio terbaru"}</h2>
-        <Link to="/murotal">Lihat semua →</Link>
-      </div>
-      {data.audio.length ? (
-        <AudioList
-          items={
-            featuredAudio.length
-              ? featuredAudio
-              : [...data.audio].sort((a, b) => b.id - a.id).slice(0, 4)
-          }
-        />
-      ) : (
-        <Empty text="Belum ada audio. Pengurus dapat mengunggah rekaman melalui panel admin." />
-      )}
-    </>
   );
 }
 function App() {
@@ -591,7 +552,12 @@ function App() {
               loading ? (
                 <p>Memuat koleksi…</p>
               ) : (
-                <Home data={data} settings={settings} />
+                <Home
+                  data={data}
+                  settings={settings}
+                  BookCard={BookCard}
+                  AudioList={AudioList}
+                />
               )
             }
           />

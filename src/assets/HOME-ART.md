@@ -1,0 +1,9 @@
+# Welcome illustration
+
+File: `home-welcome.png`. Generated with the built-in **imagegen** tool for the Kitab Majelis homepage, 2026-10-23. Decorative still-life only; book covers contain geometric ornament, without Quran text. Application headings, book titles, and Quran content remain live text from application settings, the collection, and Quran.Foundation.
+
+Final generation prompt:
+
+> Use case: photorealistic-natural. Asset type: wide website welcome hero background illustration for a premium Indonesian Islamic digital reading room.
+> Create a wide horizontal, beautifully realistic still-life of two closed ornate Islamic books on an antique carved walnut reading stand, with a small softly glowing brass lantern in the distant right background. The primary book is deep emerald cloth/leather with delicate gold geometric floral tooling, a simple geometric gold medallion and a gold bookmark ribbon. NO LETTERING, NO ARABIC TEXT, NO CALLIGRAPHY, no simulated verses, no logos on either book. Second book warm tan leather with fine gold tooling. Dignified, warm and calm, tactile handmade bindings, soft cinematic light, exceptionally detailed close-up quality.
+> Composition essential for website: concentrate ALL books and lantern in the RIGHTMOST 45% of the image; the LEFT 55% is dark emerald green, mostly empty and quiet, with only very faint out-of-focus Islamic geometric lattice texture, leaving excellent room for readable cream text that will be added in code. Books occupy lower right, lantern upper far right. Background blends seamlessly into solid deep green #124E42 toward the left and top. No bright patches behind left-side text area. No visible text ANYWHERE. Rectangular landscape composition, no website UI, no borders, no device frames, no watermark, no people, no hands, no mosque photograph. Refined muted gold and warm wood highlights, not shiny overdone fantasy. This is a production-ready decorative website hero asset, not a mockup.
