@@ -27,7 +27,7 @@ Login dengan akun yang baru Anda buat, kemudian unggah kitab dan audio.
 
 ## Persyaratan
 
-Ubuntu 22.04+, Debian 12+, atau AlmaLinux/Rocky/RHEL 9+; CPU x86_64/ARM64; systemd; aaPanel dengan Apache. Dibutuhkan akses internet ke GitHub, Astral/Python, PyPI dan Node.js/npm untuk pengunduhan. Instalasi Apache khusus yang mematikan modul proxy/headers perlu mengaktifkan modul tersebut terlebih dahulu; installer menampilkan nama modul yang kurang. Apache yang digunakan panel tetap dipertahankan.
+Ubuntu 20.04+, Debian 12+, atau AlmaLinux/Rocky/RHEL 9+; CPU x86_64/ARM64; systemd; aaPanel dengan Apache. Python 3.12 dipasang terpisah sehingga tidak bergantung pada Python 3.8 bawaan Ubuntu 20.04. Jika Node.js yang tersedia tidak sesuai, installer memasang Node.js 22 khusus aplikasi. Dibutuhkan akses internet ke GitHub, Astral/Python, PyPI dan Node.js/npm untuk pengunduhan. Instalasi Apache khusus yang mematikan modul proxy/headers perlu mengaktifkan modul tersebut terlebih dahulu; installer menampilkan nama modul yang kurang. Apache yang digunakan panel tetap dipertahankan.
 
 Pemeriksaan awal tanpa memasang atau mengubah konfigurasi:
 
@@ -51,4 +51,5 @@ journalctl -u kitab -n 50 --no-pager
 
 ## Status pengujian installer
 
-33 uji otomatis lulus, mencakup validasi domain, konfigurasi HTTPS, backup/rollback Apache, urutan instalasi, penghentian saat gagal, serta pemeliharaan akun lama. Empat pemeriksaan tambahan lulus di Linux: sintaks Bash, penerimaan konfigurasi oleh Apache nyata, validasi unit systemd, dan kerahasiaan prompt kata sandi melalui `runuser`. Pemeriksaan tersebut memakai konfigurasi sementara dan tidak memasang atau me-reload layanan sistem mesin uji. Instalasi lengkap pada server aaPanel pengguna belum dijalankan; `--check` memeriksa prasyarat server sebelum pemasangan.
+42 uji otomatis lulus, mencakup kompatibilitas versi distribusi, validasi domain, konfigurasi HTTPS, backup/rollback Apache, urutan instalasi, penghentian saat gagal, serta pemeliharaan akun lama. Empat pemeriksaan tambahan lulus di Linux: sintaks Bash, penerimaan konfigurasi oleh Apache nyata, validasi unit systemd, dan kerahasiaan prompt kata sandi melalui `runuser`. Pemeriksaan tersebut memakai konfigurasi sementara dan tidak memasang atau me-reload layanan sistem mesin uji. Instalasi lengkap pada server aaPanel pengguna belum dijalankan; `--check` memeriksa prasyarat server sebelum pemasangan.
+

@@ -34,7 +34,7 @@ Jalankan sebagai root setelah website dan SSL domain dibuat di aaPanel.
   bash install.sh --domain kitab.contoh.id
   bash install.sh --check --domain kitab.contoh.id   Pemeriksaan tanpa perubahan
 
-Didukung: Ubuntu 22.04+, Debian 12+, AlmaLinux/Rocky/RHEL 9+; x86_64/ARM64.
+Didukung: Ubuntu 20.04+, Debian 12+, AlmaLinux/Rocky/RHEL 9+; x86_64/ARM64.
 Port aplikasi 8000 hanya dipakai di localhost. Database/unggahan disimpan terpisah.
 HELP
 }
@@ -60,18 +60,22 @@ valid_domain() {
     done
 }
 
+check_distribution() {
+    local distribution="$1" major="${2%%.*}"
+    case "$distribution" in
+        ubuntu) [[ "$major" -ge 20 ]] || die 'Gunakan Ubuntu 20.04 atau lebih baru.' ;;
+        debian) [[ "$major" -ge 12 ]] || die 'Gunakan Debian 12 atau lebih baru.' ;;
+        almalinux|rocky|rhel) [[ "$major" -ge 9 ]] || die 'Gunakan AlmaLinux/Rocky/RHEL 9 atau lebih baru.' ;;
+        *) die 'Distribusi ini belum didukung installer otomatis.' ;;
+    esac
+}
+
 check_host() {
     [[ "$(uname -s)" == Linux ]] || die 'Installer ini dijalankan di server Linux aaPanel, bukan komputer Windows.'
     [[ -r /etc/os-release ]] || die 'Sistem operasi tidak dapat dikenali.'
     # File sistem yang disediakan distribusi Linux.
     . /etc/os-release
-    local major="${VERSION_ID%%.*}"
-    case "$ID" in
-        ubuntu) [[ "$major" -ge 22 ]] || die 'Gunakan Ubuntu 22.04 atau lebih baru.' ;;
-        debian) [[ "$major" -ge 12 ]] || die 'Gunakan Debian 12 atau lebih baru.' ;;
-        almalinux|rocky|rhel) [[ "$major" -ge 9 ]] || die 'Gunakan AlmaLinux/Rocky/RHEL 9 atau lebih baru.' ;;
-        *) die 'Distribusi ini belum didukung installer otomatis.' ;;
-    esac
+    check_distribution "$ID" "$VERSION_ID"
     case "$(uname -m)" in x86_64|aarch64|arm64) ;; *) die 'Arsitektur CPU belum didukung.' ;; esac
     [[ -d /run/systemd/system ]] || die 'Server harus menggunakan systemd.'
     APACHECTL=/www/server/apache/bin/apachectl

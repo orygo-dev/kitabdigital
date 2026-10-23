@@ -210,6 +210,25 @@ def test_bash_domain_validation_matches_python():
         assert (result.returncode == 0) == valid_domain(domain)
 
 
+@pytest.mark.parametrize(
+    "distribution,version,accepted",
+    [
+        ("ubuntu", "20.04", True),
+        ("ubuntu", "22.04", True),
+        ("ubuntu", "24.04", True),
+        ("ubuntu", "18.04", False),
+        ("debian", "12", True),
+        ("debian", "11", False),
+        ("rocky", "9.4", True),
+        ("rocky", "8.10", False),
+        ("unknown", "24", False),
+    ],
+)
+def test_distribution_compatibility(distribution, version, accepted):
+    result = bash_run(f'check_distribution "{distribution}" "{version}"')
+    assert (result.returncode == 0) == accepted, result.stderr
+
+
 def test_check_mode_performs_no_installation():
     result = bash_run("""check_host(){ :; }
 ask_domain(){ :; }
