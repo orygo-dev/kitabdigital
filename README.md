@@ -2,6 +2,16 @@
 
 Aplikasi kitab PDF dan audio majelis, tanpa registrasi pengguna. Satu proyek React/Vite/Tailwind dan FastAPI/SQLAlchemy/SQLite. Tidak menggunakan layanan berbayar, Docker, atau data koleksi contoh.
 
+## Instalasi paling mudah: aaPanel + Apache
+
+Buat website dan aktifkan SSL di aaPanel, lalu jalankan sebagai root melalui SSH:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/orygo-dev/kitabdigital/main/install.sh -o /root/install-kitab.sh && bash /root/install-kitab.sh
+```
+
+Isi domain dan kredensial admin. Installer menangani dependensi, build, database, layanan otomatis, serta reverse proxy Apache. [Panduan singkat aaPanel](INSTALL-AAPANEL.md).
+
 ## Menjalankan secara lokal
 
 Memerlukan Python 3.11+ dan Node.js 22 LTS.

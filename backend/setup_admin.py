@@ -1,12 +1,16 @@
 import getpass
+import argparse
 from argon2 import PasswordHasher
 from sqlalchemy import select
 from backend.models import Session, AdminUser
 
 
-def main():
+def main(skip_existing=False):
     with Session() as db:
         if db.scalar(select(AdminUser)):
+            if skip_existing:
+                print("Administrator yang sudah ada dipertahankan.")
+                return
             raise SystemExit(
                 "Administrator sudah tersedia. Penyiapan awal hanya dapat dijalankan sekali."
             )
@@ -26,4 +30,12 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+        description="Penyiapan administrator Kitab Digital."
+    )
+    parser.add_argument(
+        "--if-missing",
+        action="store_true",
+        help="Pertahankan akun yang sudah tersedia tanpa meminta kredensial baru.",
+    )
+    main(skip_existing=parser.parse_args().if_missing)
