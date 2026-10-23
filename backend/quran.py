@@ -9,7 +9,7 @@ import os
 import threading
 import time
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit
 from urllib.request import Request, urlopen
 
 from fastapi import APIRouter, HTTPException, Path, Query
@@ -173,6 +173,65 @@ def unavailable():
     return HTTPException(
         503, "Layanan Al-Qur’an sementara tidak dapat dihubungi. Silakan coba lagi."
     )
+
+
+@router.get("/reciters")
+def reciters():
+    client = get_client()
+    try:
+        rows = client.get("/resources/chapter_reciters", language="en")["reciters"]
+        return {
+            "reciters": [
+                {
+                    "id": int(row["id"]),
+                    "name": row["name"],
+                    "style": (row.get("style") or {}).get("name") or "",
+                }
+                for row in rows
+            ],
+            "source": "Quran.Foundation",
+        }
+    except (QuranUnavailable, KeyError, TypeError, ValueError):
+        raise unavailable()
+
+
+@router.get("/reciters/{reciter}/audio")
+def reciter_audio(reciter: int = Path(ge=1, le=100000)):
+    client = get_client()
+    try:
+        rows = client.get(f"/chapter_recitations/{reciter}")["audio_files"]
+        files = []
+        seen = set()
+        for row in rows:
+            chapter = int(row["chapter_id"])
+            url = row["audio_url"]
+            parsed = urlsplit(url)
+            # Only expose secure, public CDN URLs, never arbitrary schemes.
+            host = parsed.hostname or ""
+            allowed = any(
+                host == domain or host.endswith("." + domain)
+                for domain in (
+                    "quranicaudio.com", "qurancdn.com", "quran.com", "quran.foundation"
+                )
+            )
+            if (
+                parsed.scheme != "https"
+                or not allowed
+                or parsed.username
+                or parsed.password
+                or parsed.port not in (None, 443)
+            ):
+                raise QuranUnavailable()
+            if not 1 <= chapter <= 114 or chapter in seen:
+                raise QuranUnavailable()
+            seen.add(chapter)
+            files.append({"chapter_id": chapter, "audio_url": url})
+        return {
+            "audio_files": sorted(files, key=lambda row: row["chapter_id"]),
+            "source": "Quran.Foundation",
+        }
+    except (QuranUnavailable, KeyError, TypeError, ValueError):
+        raise unavailable()
 
 
 @router.get("/chapters")

@@ -1,0 +1,527 @@
+.murotal-page {
+  --mu-green: #124d3e;
+  --mu-gold: #cfb477;
+  color: #193f35;
+  background: #f7f3e8;
+  padding: 18px;
+  border: 1px solid #ddd0ad;
+  border-radius: 20px;
+  margin: 20px 0 240px;
+  box-shadow: 0 8px 32px #40371909;
+}
+.murotal-hero {
+  background:
+    linear-gradient(90deg, #05382b66, transparent),
+    url("./assets/murotal-hero.png") center/cover;
+  border: 1px solid #c1a568;
+  border-radius: 12px;
+  min-height: 250px;
+  padding: 42px 38px 24px;
+  color: #fff7df;
+  position: relative;
+  overflow: hidden;
+}
+.murotal-hero:after {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border: 1px solid #d8bd7555;
+  pointer-events: none;
+  border-radius: 6px;
+}
+.murotal-hero > div {
+  position: relative;
+  z-index: 1;
+  max-width: 68%;
+}
+.murotal-eyebrow {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: #e0c58c;
+}
+.murotal-hero h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(30px, 4vw, 46px);
+  line-height: 1.15;
+  margin: 12px 0;
+  color: #fff7df;
+}
+.murotal-hero p {
+  font-size: 15px;
+  color: #f2e8cd;
+  margin: 0;
+}
+.murotal-wave {
+  width: 190px;
+  height: 38px;
+  color: #cbae67;
+  display: block;
+  margin: 20px 0 0;
+}
+.murotal-tabs {
+  display: flex;
+  max-width: 610px;
+  margin: 22px 0 24px;
+  background: #eae7de;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #ded8c6;
+}
+.murotal-tabs button {
+  flex: 1;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #585e51;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 14px;
+}
+.murotal-tabs button[aria-selected="true"] {
+  background: #124d3e;
+  color: #fff5d9;
+  box-shadow: inset 0 -3px #c7a862;
+}
+.murotal-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 310px;
+  gap: 24px;
+  align-items: start;
+}
+.murotal-directory {
+  min-width: 0;
+}
+.murotal-filters {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin: 0 0 22px;
+}
+.murotal-qari {
+  display: flex;
+  flex: 1.2;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  min-width: 0;
+}
+.murotal-qari select {
+  min-width: 0;
+  width: 100%;
+  background: #fffdf6;
+  border-color: #d9d1ba;
+  font-size: 12px;
+  min-height: 44px;
+}
+.murotal-search {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+  min-width: 0;
+}
+.murotal-search svg {
+  position: absolute;
+  left: 13px;
+  color: #6c7769;
+  width: 17px;
+  pointer-events: none;
+}
+.murotal-search input {
+  background: #fffdf6;
+  border-color: #d9d1ba;
+  padding-left: 39px;
+  min-height: 44px;
+  min-width: 0;
+  width: 100%;
+  font-size: 13px;
+}
+.murotal-list-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 4px 12px;
+  gap: 12px;
+}
+.murotal-list-title h2 {
+  font-family: Georgia, serif;
+  font-size: 23px;
+  margin: 0;
+}
+.murotal-list-title > span {
+  font-size: 12px;
+  color: #727765;
+}
+.murotal-surahs {
+  display: grid;
+  gap: 9px;
+}
+.murotal-surah {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: #fffdf6;
+  border: 1px solid #e1dac6;
+  border-radius: 10px;
+  min-height: 76px;
+  box-shadow: 0 2px 8px #50432204;
+}
+.murotal-surah.is-current {
+  background: #dfebde;
+  border-color: #a7c4a9;
+  box-shadow: inset 3px 0 #1b624c;
+}
+.murotal-number {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid #bc9b55;
+  border-radius: 11px;
+  outline: 1px solid #d9c996;
+  outline-offset: 3px;
+  font-family: Georgia, serif;
+  font-size: 17px;
+  color: #65522e;
+  background: #f5efdc;
+}
+.murotal-surah > div {
+  min-width: 0;
+  flex: 1;
+}
+.murotal-surah h3 {
+  font-family: Georgia, serif;
+  font-size: 20px;
+  margin: 0 0 4px;
+  overflow-wrap: anywhere;
+}
+.murotal-surah small {
+  color: #697260;
+  font-size: 11px;
+}
+.murotal-play {
+  width: 40px;
+  height: 40px;
+  min-height: 40px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 50%;
+  padding: 9px;
+  background: #13553f;
+  color: white;
+  box-shadow: 0 3px 8px #13553f20;
+}
+.murotal-play:disabled {
+  opacity: 0.35;
+}
+.murotal-equalizer {
+  color: #1a6047;
+  font-size: 22px;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 28px;
+}
+.murotal-equalizer i {
+  display: block;
+  width: 3px;
+  height: 12px;
+  background: currentColor;
+  border-radius: 2px;
+}
+.murotal-equalizer i:nth-child(2) {
+  height: 24px;
+}
+.murotal-equalizer i:nth-child(3) {
+  height: 17px;
+}
+.murotal-equalizer i:nth-child(4) {
+  height: 21px;
+}
+.murotal-rosette svg {
+  display: block;
+  width: 104px;
+  height: 104px;
+  margin: 26px auto;
+}
+.murotal-now .murotal-attribution {
+  color: #365a45;
+}
+.murotal-now {
+  position: sticky;
+  top: 20px;
+}
+.murotal-now-card {
+  padding: 25px 24px 28px;
+  background: radial-gradient(ellipse at top right, #226349, #07392c 80%);
+  border: 1px solid #b49856;
+  border-radius: 13px;
+  color: #fff6df;
+  text-align: center;
+  box-shadow:
+    inset 0 0 0 7px #123e30,
+    inset 0 0 0 8px #b99c5655,
+    0 6px 20px #173f3012;
+}
+.murotal-now-label {
+  display: inline-block;
+  font-size: 9px;
+  letter-spacing: 1px;
+  border: 1px solid #b99c56;
+  color: #e5cc8d;
+  border-radius: 20px;
+  padding: 6px 12px;
+}
+.murotal-rosette {
+  font-size: 103px;
+  line-height: 1.4;
+  margin: 10px auto;
+  color: #cfb477;
+}
+.murotal-now h2 {
+  font-family: Georgia, serif;
+  font-size: 29px;
+  color: #fff5d9;
+  line-height: 1.2;
+  margin: 0 0 12px;
+}
+.murotal-now p {
+  font-size: 12px;
+  line-height: 1.7;
+  color: #e0e6d5;
+  margin: 0;
+}
+.murotal-now .murotal-wave {
+  width: 100%;
+  height: 45px;
+  margin: 22px auto;
+}
+.murotal-progress {
+  display: block;
+}
+.murotal-progress input,
+.murotal-volume input {
+  padding: 0;
+  min-height: 24px;
+  accent-color: #d6bb78;
+  width: 100%;
+  border: 0;
+  background: transparent;
+}
+.murotal-progress > span {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #fff1c8;
+}
+.murotal-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 9px;
+  margin: 22px 0;
+}
+.murotal-controls button {
+  background: transparent;
+  color: #f3e6bc;
+  border: 0;
+  min-height: 40px;
+  min-width: 36px;
+  padding: 8px;
+  display: grid;
+  place-items: center;
+}
+.murotal-controls button[aria-pressed="true"] {
+  background: #e3c47a;
+  color: #143d2f;
+  border-radius: 8px;
+}
+.murotal-controls .murotal-main-play {
+  height: 62px;
+  width: 62px;
+  min-width: 62px;
+  border: 1px solid #f4dda2;
+  outline: 1px solid #b29b5b;
+  outline-offset: 4px;
+  border-radius: 50%;
+  background: linear-gradient(#e8d195, #bda15f);
+  color: #164734;
+  margin: 0 5px;
+}
+.murotal-volume {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 12px;
+  font-size: 11px;
+  color: #e0d6b6;
+}
+.murotal-attribution {
+  margin: 0;
+  padding: 16px 10px;
+  text-align: center;
+  background: #ede6d4;
+  border: 1px solid #ded3b5;
+  border-top: 0;
+  border-radius: 0 0 10px 10px;
+  font-size: 11px;
+}
+.murotal-attribution a {
+  color: #164e3c;
+}
+.murotal-now .murotal-now-hint {
+  color: #d2bd85;
+  font-size: 11px;
+}
+.murotal-message {
+  border: 1px solid #dccca2;
+  border-radius: 10px;
+  padding: 25px;
+  background: #fff9e8;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.murotal-message button {
+  background: #164e3c;
+  color: #fff8e1;
+}
+.murotal-majelis .page-heading {
+  margin-top: 10px;
+}
+.murotal-majelis .audio-row {
+  background: #fffdf6;
+  border: 1px solid #ded3b5;
+  border-radius: 12px;
+}
+.murotal-page button:focus-visible,
+.murotal-page input:focus-visible,
+.murotal-page select:focus-visible {
+  outline: 3px solid #b68e37;
+  outline-offset: 3px;
+}
+.player {
+  border: 1px solid #bea35e;
+  background: linear-gradient(100deg, #0c4937, #123d32);
+  box-shadow: 0 8px 30px #123d3240;
+}
+@media (max-width: 1000px) {
+  .murotal-layout {
+    grid-template-columns: minmax(0, 1fr) 270px;
+    gap: 18px;
+  }
+  .murotal-filters {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .murotal-qari,
+  .murotal-search {
+    flex-basis: 100%;
+  }
+  .murotal-now-card {
+    padding: 24px 18px;
+  }
+}
+@media (max-width: 700px) {
+  .murotal-page {
+    padding: 11px;
+    margin-top: 10px;
+    border-radius: 14px;
+  }
+  .murotal-hero {
+    min-height: 235px;
+    padding: 31px 20px 20px;
+    background-position: right center;
+    background-image:
+      linear-gradient(90deg, #043b2be6, #043b2b88 55%, transparent),
+      url("./assets/murotal-hero.png");
+  }
+  .murotal-hero > div {
+    max-width: 85%;
+  }
+  .murotal-hero h1 {
+    max-width: 100%;
+    font-size: 33px;
+    text-shadow: 0 2px 8px #002619;
+  }
+  .murotal-hero p {
+    font-size: 12px;
+    max-width: 180px;
+  }
+  .murotal-hero h1 span {
+    display: block;
+  }
+  .murotal-eyebrow {
+    font-size: 8px;
+    letter-spacing: 1.3px;
+  }
+  .murotal-hero .murotal-wave {
+    width: 130px;
+    height: 30px;
+    margin-top: 13px;
+  }
+  .murotal-tabs {
+    margin: 15px 0 20px;
+  }
+  .murotal-tabs button {
+    font-size: 11px;
+    gap: 7px;
+    padding: 10px 7px;
+  }
+  .murotal-layout {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .murotal-now {
+    position: static;
+  }
+  .murotal-now-card {
+    max-width: 420px;
+    margin: auto;
+  }
+  .murotal-qari select {
+    font-size: 12px;
+  }
+  .murotal-surah {
+    padding: 12px;
+    gap: 14px;
+    min-height: 76px;
+  }
+  .murotal-surah h3 {
+    font-size: 19px;
+  }
+  .murotal-number {
+    width: 34px;
+    height: 34px;
+    font-size: 15px;
+  }
+  .murotal-surah small {
+    font-size: 10px;
+  }
+  .murotal-equalizer {
+    font-size: 17px;
+    letter-spacing: 0;
+  }
+  .murotal-now-label {
+    font-size: 10px;
+  }
+  .murotal-attribution {
+    max-width: 420px;
+    margin: auto;
+  }
+  .murotal-list-title h2 {
+    font-size: 22px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .murotal-page * {
+    scroll-behavior: auto;
+  }
+}

@@ -208,7 +208,7 @@ test("Beranda: koleksi kosong dan penanda tidak valid tetap rapi di ponsel", asy
   }
   await page.locator('a.home-entry[href="/murotal"]').click();
   await expect(
-    page.getByRole("heading", { name: "Murotal & Sholawat", exact: true }),
+    page.getByRole("heading", { name: "Murotal Al-Qur’an", exact: true }),
   ).toBeVisible();
 });
 

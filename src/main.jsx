@@ -29,6 +29,7 @@ import Quran from "./quran";
 import Home from "./home";
 import BookLibrary from "./book-library";
 import "./style.css";
+import Murotal from "./murotal";
 
 const AudioContext = createContext();
 const defaults = {
@@ -45,8 +46,24 @@ function AudioProvider({ children }) {
     [repeat, setRepeat] = useState(false),
     [time, setTime] = useState(0),
     [duration, setDuration] = useState(0),
+    [volume, setVolume] = useState(1),
     [error, setError] = useState("");
   const current = queue[index];
+  const toggle = () => {
+    if (!current) return;
+    if (playing) ref.current.pause();
+    else {
+      if (ref.current.error) ref.current.load();
+      ref.current.play().catch(() => {
+        setPlaying(false);
+        setError("Ketuk putar untuk memulai audio.");
+      });
+    }
+  };
+  const seek = (value) => {
+    if (Number.isFinite(duration) && duration > 0)
+      ref.current.currentTime = Math.min(duration, Math.max(0, Number(value)));
+  };
   const start = (items, i = 0) => {
     if (!items[i]) return;
     setQueue(items);
@@ -55,25 +72,29 @@ function AudioProvider({ children }) {
     setError("");
     if (current?.id === items[i]?.id) {
       ref.current.currentTime = 0;
-      ref.current
-        .play()
-        .catch(() => setError("Ketuk putar untuk memulai audio."));
+      ref.current.play().catch(() => {
+        setPlaying(false);
+        setError("Ketuk putar untuk memulai audio.");
+      });
     }
   };
   const step = (d) => {
     if (queue.length) {
       setTime(0);
-      setDuration(0);
       setError("");
       if (queue.length === 1) {
         ref.current.currentTime = 0;
         ref.current.play().catch(() => setPlaying(false));
         return;
       }
+      setDuration(0);
       setIndex((i) => (i + d + queue.length) % queue.length);
       setPlaying(true);
     }
   };
+  useEffect(() => {
+    ref.current.volume = volume;
+  }, [volume]);
   useEffect(() => {
     if (current) {
       ref.current.load();
@@ -94,7 +115,7 @@ function AudioProvider({ children }) {
         });
       }
     }
-  }, [current?.id, current?.file]);
+  }, [current?.id, current?.file, current?.audio_url]);
   useEffect(() => {
     if (!("mediaSession" in navigator)) return;
     const handlers = {
@@ -119,12 +140,32 @@ function AudioProvider({ children }) {
     };
   }, [queue, index]);
   return (
-    <AudioContext.Provider value={{ start, current }}>
+    <AudioContext.Provider
+      value={{
+        start,
+        current,
+        playing,
+        repeat,
+        setRepeat,
+        time,
+        duration,
+        error,
+        toggle,
+        seek,
+        step,
+        volume,
+        setVolume,
+      }}
+    >
       {children}
       <audio
         ref={ref}
-        src={current ? fileUrl(current.file) : undefined}
-        onPlay={() => setPlaying(true)}
+        src={current ? current.audio_url || fileUrl(current.file) : undefined}
+        preload="metadata"
+        onPlay={() => {
+          setPlaying(true);
+          setError("");
+        }}
         onPause={() => setPlaying(false)}
         onTimeUpdate={() => setTime(ref.current.currentTime)}
         onLoadedMetadata={() => setDuration(ref.current.duration)}
@@ -150,14 +191,7 @@ function AudioProvider({ children }) {
             <button onClick={() => step(-1)} aria-label="Audio sebelumnya">
               ⏮
             </button>
-            <button
-              className="primary"
-              onClick={() =>
-                playing
-                  ? ref.current.pause()
-                  : ref.current.play().catch(() => setError("Pemutaran gagal."))
-              }
-            >
+            <button className="primary" onClick={toggle}>
               {playing ? "Jeda" : "Putar"}
             </button>
             <button onClick={() => step(1)} aria-label="Audio berikutnya">
@@ -341,6 +375,15 @@ function AudioList({ items, compact = false }) {
         </article>
       ))}
     </div>
+  );
+}
+function MurotalPage({ data }) {
+  const player = useContext(AudioContext);
+  return (
+    <Murotal
+      player={player}
+      majelis={<Library key="audio" data={data} audio />}
+    />
   );
 }
 function Library({ audio = false, data }) {
@@ -584,10 +627,7 @@ function App() {
             path="/kitab"
             element={<BookLibrary data={data} BookCard={BookCard} />}
           />
-          <Route
-            path="/murotal"
-            element={<Library key="audio" data={data} audio />}
-          />
+          <Route path="/murotal" element={<MurotalPage data={data} />} />
           <Route
             path="/kitab/:id"
             element={<Reader books={data.books} loading={loading} />}

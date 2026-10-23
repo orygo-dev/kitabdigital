@@ -115,6 +115,7 @@ test("alur admin, pembaca, audio persisten, merek, layar pembuka dan offline", a
   await page.getByRole("button", { name: "Simpan perubahan" }).click();
   await expect(page.getByText("Perubahan berhasil disimpan.")).toBeVisible();
   await page.getByRole("link", { name: "♫ Murotal" }).click();
+  await page.getByRole("tab", { name: "Audio Majelis" }).click();
   await page.getByRole("button", { name: "Putar", exact: true }).click();
   await expect
     .poll(() => page.locator("audio").evaluate((a) => a.currentTime))
@@ -329,6 +330,7 @@ test("regresi: seluruh halaman desktop/mobile, filter, audio, pengaturan dan sal
   );
   await page.getByLabel("Cari judul").fill("Audit rtl");
   await page.getByRole("link", { name: "♫ Murotal" }).click();
+  await page.getByRole("tab", { name: "Audio Majelis" }).click();
   await expect(page.getByLabel("Cari judul")).toHaveValue("");
   await expect(page.getByLabel("Kategori", { exact: true })).toHaveValue("");
   await expect(

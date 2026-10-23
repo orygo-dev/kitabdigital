@@ -44,6 +44,46 @@ def test_missing_credentials_returns_actionable_message(client, monkeypatch):
     assert "belum diaktifkan" in response.json()["detail"]
 
 
+def test_murotal_uses_chapter_reciters_and_filters_private_metadata(client, monkeypatch):
+    calls = []
+    def get(self, path, **params):
+        calls.append((path, params))
+        if path == "/resources/chapter_reciters":
+            return {"reciters": [{"id": 7, "name": "Qari", "style": {"name": "Murattal"}, "private": "hidden"}]}
+        return {"audio_files": [
+            {"chapter_id": 2, "audio_url": "https://download.quranicaudio.com/002.mp3", "private": "hidden"},
+            {"chapter_id": 1, "audio_url": "https://audio.qurancdn.com/001.mp3"},
+        ]}
+    monkeypatch.setattr(quran.QuranClient, "get", get)
+    r = client.get("/api/quran/reciters")
+    assert r.status_code == 200
+    assert r.json()["reciters"] == [{"id": 7, "name": "Qari", "style": "Murattal"}]
+    r = client.get("/api/quran/reciters/7/audio")
+    assert r.status_code == 200
+    assert [x["chapter_id"] for x in r.json()["audio_files"]] == [1, 2]
+    assert "private" not in r.text and "hidden" not in r.text
+    assert calls == [("/resources/chapter_reciters", {"language": "en"}), ("/chapter_recitations/7", {})]
+
+
+@pytest.mark.parametrize("url", ["javascript:alert(1)", "http://download.quranicaudio.com/1.mp3", "https://quran.com.evil.test/1.mp3", "https://localhost/1.mp3", "https://user:pass@quran.com/1.mp3", "https://quran.com:8080/1.mp3"])
+def test_murotal_rejects_unsafe_audio_urls(client, monkeypatch, url):
+    monkeypatch.setattr(quran.QuranClient, "get", lambda *a, **kw: {"audio_files": [{"chapter_id": 1, "audio_url": url}]})
+    assert client.get("/api/quran/reciters/7/audio").status_code == 503
+
+
+def test_murotal_empty_catalog_validation_and_failure(client, monkeypatch):
+    monkeypatch.setattr(quran.QuranClient, "get", lambda *a, **kw: {"audio_files": []})
+    assert client.get("/api/quran/reciters/7/audio").json()["audio_files"] == []
+    assert client.get("/api/quran/reciters/0/audio").status_code == 422
+    def fail(*a, **kw):
+        raise quran.QuranUnavailable()
+    monkeypatch.setattr(quran.QuranClient, "get", fail)
+    for path in ("/api/quran/reciters", "/api/quran/reciters/7/audio"):
+        response = client.get(path)
+        assert response.status_code == 503
+        assert "secret" not in response.text
+
+
 def test_chapters_cache_and_credentials_stay_on_server(client, monkeypatch):
     calls = []
 
