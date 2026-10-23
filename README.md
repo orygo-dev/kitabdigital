@@ -1,5 +1,7 @@
 # Kitab Majelis
 
+Menu Al-Qur’an menggunakan Quran.Foundation: [panduan mengaktifkan API dan konfigurasi server](QURAN-SETUP.md).
+
 Aplikasi kitab PDF dan audio majelis, tanpa registrasi pengguna. Satu proyek React/Vite/Tailwind dan FastAPI/SQLAlchemy/SQLite. Tidak menggunakan layanan berbayar, Docker, atau data koleksi contoh.
 
 ## Instalasi paling mudah: aaPanel + Apache

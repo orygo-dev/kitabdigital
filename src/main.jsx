@@ -25,6 +25,7 @@ import {
 } from "./api";
 import Reader from "./reader";
 import Admin from "./admin";
+import Quran from "./quran";
 import "./style.css";
 
 const AudioContext = createContext();
@@ -594,6 +595,8 @@ function App() {
               )
             }
           />
+          <Route path="/alquran" element={<Quran />} />
+          <Route path="/alquran/:id" element={<Quran />} />
           <Route path="/kitab" element={<Library key="books" data={data} />} />
           <Route
             path="/murotal"
@@ -613,6 +616,9 @@ function App() {
       <nav className="bottom-nav" aria-label="Navigasi utama">
         <NavLink to="/" end>
           ⌂ <span>Beranda</span>
+        </NavLink>
+        <NavLink to="/alquran">
+          ۞ <span>Al-Qur’an</span>
         </NavLink>
         <NavLink to="/kitab">
           ▤ <span>Kitab</span>

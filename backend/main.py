@@ -28,6 +28,7 @@ from .models import (
     AppSettings,
 )
 from .storage import storage
+from .quran import router as quran_router
 
 UPLOADS = DATA / "uploads"
 UPLOADS.mkdir(exist_ok=True)
@@ -637,6 +638,8 @@ def manifest(db=Depends(db_session)):
         media_type="application/manifest+json",
     )
 
+
+app.include_router(quran_router)
 
 app.add_middleware(
     SessionMiddleware,

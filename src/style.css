@@ -391,10 +391,12 @@ main {
   justify-content: center;
   z-index: 30;
   height: 72px;
-  gap: 60px;
+  gap: 20px;
 }
 .bottom-nav a {
-  min-width: 100px;
+  min-width: 0;
+  flex: 1;
+  max-width: 160px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -820,4 +822,37 @@ main {
   .login-card {
     padding: 22px;
   }
+}
+
+/* Al-Qur'an: readable Arabic and compact navigation on mobile. */
+.quran-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+.quran-heading h1 { margin: 8px 0; }
+.quran-heading small, .quran-credit { color: #607267; }
+.quran-resume { display: block; background: #e8efe3; border: 1px solid #cbd9c4; border-radius: 12px; padding: 16px; margin: 16px 0; }
+.quran-search { display: block; margin: 24px 0; }
+.quran-search input { width: 100%; margin-top: 8px; }
+.quran-chapters { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 12px; }
+.quran-chapter { display: flex; align-items: center; gap: 14px; background: #fffdf8; border: 1px solid #d9dfd1; border-radius: 14px; padding: 18px; }
+.quran-chapter:hover { border-color: var(--primary); }
+.quran-chapter small { display: block; margin-top: 4px; color: #607267; }
+.quran-number { min-width: 34px; color: var(--primary); font-weight: bold; }
+.quran-surah-arabic { margin-left: auto; font-family: 'Noto Naskh Arabic', 'Traditional Arabic', serif; font-size: 24px; }
+.quran-controls { display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin: 24px 0; }
+.quran-controls label { display: flex; align-items: center; gap: 10px; }
+.quran-controls input[type=range] { max-width: 140px; }
+.quran-verse { background: #fffdf8; border: 1px solid #d9dfd1; border-radius: 16px; padding: 24px; margin-bottom: 16px; scroll-margin-top: 110px; }
+.quran-verse:target { border-color: var(--primary); }
+.quran-verse-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.quran-verse-heading b { color: var(--primary); }
+.quran-verse-heading button { font-size: 13px; }
+.quran-arabic { font-family: 'Noto Naskh Arabic', 'Traditional Arabic', 'Amiri', serif; text-align: right; line-height: 2.4; margin: 24px 0; overflow-wrap: anywhere; }
+.quran-translation { line-height: 1.9; white-space: pre-line; }
+.quran-pagination { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; margin: 24px 0; }
+.quran-credit { font-size: 13px; line-height: 1.8; margin-top: 24px; }
+.quran-credit a { text-decoration: underline; }
+@media (max-width: 600px) {
+  .quran-verse { padding: 18px; }
+  .quran-heading { align-items: flex-start; flex-direction: column; }
+  .quran-chapters { grid-template-columns: minmax(0, 1fr); }
+  .bottom-nav a span { font-size: 0.75rem; }
 }
