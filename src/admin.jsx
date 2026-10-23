@@ -35,6 +35,7 @@ export default function Admin({ onChange, settings }) {
     [busy, setBusy] = useState(false),
     [fetching, setFetching] = useState(false);
   const requestVersion = useRef(0);
+  const [uploads, setUploads] = useState({});
   function fail(error) {
     setError(error.message);
     if (error.status === 401) setUser(null);
@@ -51,6 +52,7 @@ export default function Admin({ onChange, settings }) {
     setError("");
     setMessage("");
     setForm(null);
+    setUploads({});
     try {
       if (tab === "settings") {
         const current = await api("/settings");
@@ -101,11 +103,16 @@ export default function Admin({ onChange, settings }) {
     }
   }
   async function upload(e, key, kind) {
-    const file = e.target.files[0];
+    const input = e.target;
+    const file = input.files[0];
     if (!file) return;
     setBusy(true);
     setError("");
     setMessage("Mengunggah berkas, mohon tunggu…");
+    setUploads((previous) => ({
+      ...previous,
+      [key]: { state: "uploading", text: `Mengunggah ${file.name}, mohon tunggu…` },
+    }));
     try {
       const body = new FormData();
       body.append("file", file);
@@ -114,11 +121,20 @@ export default function Admin({ onChange, settings }) {
         body,
       });
       setForm((f) => ({ ...f, [key]: result.file }));
+      setUploads((previous) => ({
+        ...previous,
+        [key]: { state: "success", text: `${file.name} berhasil diunggah.` },
+      }));
       setMessage("Berkas berhasil diunggah. Simpan formulir untuk menerapkan.");
     } catch (e) {
       setMessage("");
+      setUploads((previous) => ({
+        ...previous,
+        [key]: { state: "error", text: `Unggahan gagal: ${e.message} Pilih berkas kembali untuk mencoba ulang.` },
+      }));
       fail(e);
     } finally {
+      input.value = "";
       setBusy(false);
     }
   }
@@ -201,6 +217,7 @@ export default function Admin({ onChange, settings }) {
         accept="image/png,image/jpeg,image/webp"
         onChange={(e) => upload(e, key, "images")}
       />
+      {uploadStatus(key)}
       {form?.[key] && (
         <div className="upload-preview">
           <img src={fileUrl(form[key])} alt={label} />
@@ -211,6 +228,16 @@ export default function Admin({ onChange, settings }) {
       )}
     </label>
   );
+  function uploadStatus(key) {
+    const current = uploads[key];
+    if (!current) return null;
+    return (
+      <div role={current.state === "error" ? "alert" : "status"}>
+        {current.state === "uploading" && <progress aria-label="Proses unggah berkas" />}
+        <small>{current.text}</small>
+      </div>
+    );
+  }
   if (checking) return <p>Memeriksa sesi…</p>;
   if (!user)
     return (
@@ -441,6 +468,7 @@ export default function Admin({ onChange, settings }) {
                         accept={tab === "books" ? ".pdf" : ".mp3"}
                         onChange={(e) => upload(e, "file", tab)}
                       />
+                      {uploadStatus("file")}
                       <small>
                         {form.file
                           ? "Berkas tersedia: " + form.file

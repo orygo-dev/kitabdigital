@@ -49,6 +49,10 @@ Melihat log aplikasi:
 journalctl -u kitab -n 50 --no-pager
 ```
 
+## Unggahan audio besar melalui Cloudflare
+
+Aplikasi menerima MP3 hingga 200 MB secara bawaan. Jika domain memakai proxy Cloudflare Free/Pro, batas unggahan satu permintaan adalah 100 MB sehingga file seperti MP3 149 MB dapat ditolak sebelum mencapai aplikasi. Coba MP3 kecil untuk membedakan batas proxy dari masalah unggahan aplikasi. Untuk file di atas batas proxy, ubah record domain aplikasi di Cloudflare menjadi **DNS only** (awan abu-abu), lalu unggah kembali setelah perubahan DNS berlaku. Pastikan domain tetap mengarah ke server aaPanel dan SSL website aktif. Lihat [batas unggahan Cloudflare](https://developers.cloudflare.com/support/troubleshooting/http-status-codes/4xx-client-error/error-413/).
+
 ## Status pengujian installer
 
 48 uji otomatis lulus, mencakup kompatibilitas versi distribusi, validasi domain, konfigurasi HTTPS, backup/rollback Apache, urutan instalasi, penghentian saat gagal, serta pemeliharaan akun lama. Empat pemeriksaan tambahan lulus di Linux: sintaks Bash, penerimaan konfigurasi oleh Apache nyata, validasi unit systemd, dan kerahasiaan prompt kata sandi melalui `runuser`. Pemeriksaan tersebut memakai konfigurasi sementara dan tidak memasang atau me-reload layanan sistem mesin uji. Instalasi lengkap pada server aaPanel pengguna belum dijalankan; `--check` memeriksa prasyarat server sebelum pemasangan.

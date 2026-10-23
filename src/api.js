@@ -16,7 +16,11 @@ export async function api(path, options = {}) {
   }
   const data = await res
     .json()
-    .catch(() => ({ detail: "Respons server tidak valid." }));
+    .catch(() => ({
+      detail: res.status === 413
+        ? "Unggahan ditolak karena ukurannya melebihi batas server atau proxy. Cloudflare Free/Pro membatasi satu unggahan hingga 100 MB."
+        : "Respons server tidak valid.",
+    }));
   if (!res.ok) {
     const error = Error(
       typeof data.detail === "string"
