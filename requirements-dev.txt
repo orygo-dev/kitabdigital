@@ -1,0 +1,4 @@
+-r requirements.txt
+lameenc>=1.8
+httpx>=0.28,<1
+pytest>=9,<10
