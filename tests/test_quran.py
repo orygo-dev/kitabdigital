@@ -8,6 +8,22 @@ import pytest
 from backend import quran
 
 
+@pytest.mark.parametrize("body", [None, b"grant_type=client_credentials&scope=content"])
+def test_requests_identify_app_for_quran_foundation_firewall(monkeypatch, body):
+    def open_request(request, timeout):
+        assert request.get_header("User-agent") == "KitabDigital/1.0"
+        assert request.get_header("Accept") == "application/json"
+        assert request.get_header("X-auth-token") == "test-token"
+        assert request.data == body
+        assert timeout == 20
+        return io.BytesIO(b'{"ok": true}')
+
+    monkeypatch.setattr(quran, "urlopen", open_request)
+    assert quran.request_json(
+        "https://apis.quran.foundation/test", {"x-auth-token": "test-token"}, body
+    ) == {"ok": True}
+
+
 @pytest.fixture
 def client(monkeypatch):
     monkeypatch.setenv("QF_CLIENT_ID", "test-client")

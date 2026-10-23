@@ -22,7 +22,16 @@ class QuranUnavailable(Exception):
 
 
 def request_json(url, headers, body=None):
-    request = Request(url, data=body, headers=headers)
+    # Quran.Foundation blocks Python-urllib's default User-Agent (HTTP 403/1010).
+    request = Request(
+        url,
+        data=body,
+        headers={
+            "User-Agent": "KitabDigital/1.0",
+            "Accept": "application/json",
+            **headers,
+        },
+    )
     with urlopen(request, timeout=20) as response:
         return json.load(response)
 

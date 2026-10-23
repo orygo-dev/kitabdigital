@@ -40,6 +40,8 @@ Tanpa kredensial, menu tetap terlihat dan menampilkan “Layanan Al-Qur’an bel
 
 ## Terjemahan dan sumber
 
+Jika muncul pesan layanan tidak dapat dihubungi, pastikan versi terbaru sudah terpasang dan `QF_ENV` sesuai dengan lingkungan kredensial. Integrasi mengirim `User-Agent: KitabDigital/1.0`; User-Agent bawaan Python urllib diblokir oleh Quran.Foundation dengan HTTP 403/1010 sesuai [panduan autentikasi](https://api-docs.quran.foundation/docs/quickstart/manual-authentication/).
+
 Backend mengambil daftar `/resources/translations` dan memilih sumber berbahasa `indonesian` dengan ID terkecil agar pilihan konsisten. Nama sumber dan penulis ditampilkan di pembaca. Untuk menetapkan sumber tertentu, tambahkan `QF_TRANSLATION_ID=ID_SUMBER` di `/etc/kitab.env`; ID tersebut harus merupakan terjemahan Indonesia yang tersedia pada lingkungan API tersebut. Terjemahan tidak dihasilkan AI atau diterjemahkan ulang. Markup ditampilkan sebagai teks biasa, penanda catatan kaki disembunyikan, dan teks Arab dipertahankan dari `text_uthmani`. Halaman ditandai `translate="no"` untuk mencegah penerjemahan otomatis.
 
 Token disimpan di memori server dan diperbarui sebelum kedaluwarsa. Respons konten di-cache satu jam, maksimal 256 permintaan berbeda per proses. Jika API mengembalikan 401, backend memperbarui token dan mencoba sekali lagi. Tidak ada database baru atau migrasi untuk fitur ini.
