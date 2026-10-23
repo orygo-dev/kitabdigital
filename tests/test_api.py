@@ -89,6 +89,19 @@ def authenticated():
     return client, username
 
 
+@pytest.mark.parametrize(
+    "file,detail",
+    [("", "wajib diunggah"), ("audio/" + "a" * 32 + ".mp3", "Unggah ulang")],
+)
+def test_missing_audio_file_explains_recovery(authenticated, file, detail):
+    client, _ = authenticated
+    response = client.post(
+        "/api/admin/audio", json={"title": "Uji audio", "file": file}
+    )
+    assert response.status_code == 400
+    assert detail in response.json()["detail"]
+
+
 def test_logout_and_new_login_revoke_old_cookie(authenticated):
     client, username = authenticated
     stolen = TestClient(app)

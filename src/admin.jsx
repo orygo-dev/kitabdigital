@@ -105,6 +105,7 @@ export default function Admin({ onChange, settings }) {
     if (!file) return;
     setBusy(true);
     setError("");
+    setMessage("Mengunggah berkas, mohon tunggu…");
     try {
       const body = new FormData();
       body.append("file", file);
@@ -115,6 +116,7 @@ export default function Admin({ onChange, settings }) {
       setForm((f) => ({ ...f, [key]: result.file }));
       setMessage("Berkas berhasil diunggah. Simpan formulir untuk menerapkan.");
     } catch (e) {
+      setMessage("");
       fail(e);
     } finally {
       setBusy(false);
@@ -122,6 +124,12 @@ export default function Admin({ onChange, settings }) {
   }
   async function save(e) {
     e.preventDefault();
+    if ((tab === "books" || tab === "audio") && !form.file) {
+      setError(
+        `Pilih berkas ${tab === "books" ? "PDF" : "MP3"} dan tunggu hingga unggahan berhasil sebelum menyimpan.`,
+      );
+      return;
+    }
     setBusy(true);
     setError("");
     try {

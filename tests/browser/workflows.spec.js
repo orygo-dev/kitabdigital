@@ -101,6 +101,10 @@ test("alur admin, pembaca, audio persisten, merek, layar pembuka dan offline", a
     .getByRole("button", { name: "+ Tambah audio", exact: true })
     .click();
   await page.getByLabel("Judul", { exact: true }).fill("Audio Verifikasi");
+  await page.getByRole("button", { name: "Simpan perubahan" }).click();
+  await expect(
+    page.getByText("Pilih berkas MP3 dan tunggu hingga unggahan berhasil sebelum menyimpan."),
+  ).toBeVisible();
   await page
     .getByLabel("Berkas MP3")
     .setInputFiles("test-results/fixtures/nada.mp3");

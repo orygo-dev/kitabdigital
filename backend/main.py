@@ -533,8 +533,17 @@ async def write_content(kind, request, db, id=None):
             raise HTTPException(400, "Teks terlalu panjang atau tidak valid.")
         if k == "direction" and v not in ("rtl", "ltr"):
             raise HTTPException(400, "Arah baca tidak valid.")
-        if k == "file" and not valid_file(v, kind):
-            raise HTTPException(400, "Berkas utama tidak ditemukan.")
+        if k == "file":
+            if not v:
+                raise HTTPException(
+                    400,
+                    "Berkas utama wajib diunggah. Pilih berkas dan tunggu hingga unggahan berhasil sebelum menyimpan.",
+                )
+            if not valid_file(v, kind):
+                raise HTTPException(
+                    400,
+                    "Berkas unggahan tidak ditemukan di server. Unggah ulang berkas sebelum menyimpan.",
+                )
         if k == "cover" and v and not valid_file(v, "images"):
             raise HTTPException(400, "Sampul tidak ditemukan.")
         if (
